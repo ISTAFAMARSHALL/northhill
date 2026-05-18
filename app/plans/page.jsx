@@ -105,10 +105,11 @@ export default function PlanSelectionPage() {
   const [user, setUser]           = useState(null);
   const [activeTerm, setTerm]     = useState("quarterly");
   const [selected, setSelected]   = useState(null);
-  const [confirming, setConfirming] = useState(false);
-  const [loading, setLoading]     = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError]         = useState("");
+  const [confirming, setConfirming]   = useState(false);
+  const [loading, setLoading]         = useState(false);
+  const [submitted, setSubmitted]     = useState(false);
+  const [error, setError]             = useState("");
+  const [accessToken, setAccessToken] = useState(null);
   const supabase = createClient();
 
   // Guard — must be logged in
@@ -116,6 +117,7 @@ export default function PlanSelectionPage() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session?.user) { window.location.href = "/signup"; return; }
       setUser(session.user);
+      setAccessToken(session.access_token);
     });
   }, []);
 
@@ -129,7 +131,10 @@ export default function PlanSelectionPage() {
     try {
       const res = await fetch("/api/orders/request", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`,
+        },
         body: JSON.stringify({
           planId:      selected.id,
           planName:    selected.name,
