@@ -6,29 +6,35 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
-function getAdminClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SECRET_KEY;
-  if (!url || !key) {
-    throw new Error(
-      "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SECRET_KEY in .env.local"
-    );
-  }
-  return createClient(url, key, { auth: { persistSession: false } });
-}
-
 export async function POST(req) {
   try {
+    // Use the user's JWT so the insert runs as the authenticated user,
+    // satisfying the RLS policy (auth.uid() = user_id) without needing
+    // the service_role key.
+    const token = req.headers.get("authorization")?.replace("Bearer ", "");
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!url || !anonKey) {
+      throw new Error("Missing Supabase env vars in .env.local");
+    }
+
+    const supabase = createClient(url, anonKey, {
+      global: { headers: { Authorization: `Bearer ${token}` } },
+      auth:   { persistSession: false },
+    });
+
     const body = await req.json();
     const {
       planId, planName, planTerm, price,
       connections, userEmail, userName, userId,
     } = body;
 
-    const supabaseAdmin = getAdminClient();
-
     // ── 1. Save pending order to Supabase ──────────────────────
-    const { error: dbError } = await supabaseAdmin
+    const { error: dbError } = await supabase
       .from("orders")
       .insert({
         user_id:     userId,
