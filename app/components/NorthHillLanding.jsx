@@ -188,16 +188,8 @@ const TERM_LABELS = { monthly: "Monthly", quarterly: "3 Months", annual: "12 Mon
 
 export default function NorthHillLanding() {
   const [activeTerm, setActiveTerm] = useState("quarterly");
-  const [trialOpen, setTrialOpen] = useState(false);
-  const [trialEmail, setTrialEmail] = useState("");
-  const [trialSubmitted, setTrialSubmitted] = useState(false);
 
   const visiblePlans = PLANS.filter((p) => p.term === activeTerm);
-
-  const handleTrialSubmit = (e) => {
-    e.preventDefault();
-    if (trialEmail) setTrialSubmitted(true);
-  };
 
   return (
     <div style={{ fontFamily: "'DM Sans', 'Segoe UI', sans-serif", background: "#0a0a0f", minHeight: "100vh", color: "#e8e8f0" }}>
@@ -224,9 +216,10 @@ export default function NorthHillLanding() {
           <a href="#features" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>Features</a>
           <a href="#pricing" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>Pricing</a>
           <a href="#faq" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>FAQ</a>
-          <button className="cta-btn" onClick={() => setTrialOpen(true)} style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", padding: "8px 18px", borderRadius: 8, fontSize: 14, fontWeight: 500 }}>
-            Free Trial
-          </button>
+          <a href="/portal" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>My Account</a>
+          <a href="/signup" style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", padding: "8px 18px", borderRadius: 8, fontSize: 14, fontWeight: 500, textDecoration: "none" }}>
+            Get Started
+          </a>
         </div>
       </nav>
 
@@ -245,11 +238,11 @@ export default function NorthHillLanding() {
           Thousands of live channels, on-demand movies & shows, full EPG guides — starting at $13/month. Cut the cable bill for good.
         </p>
         <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
-          <button className="cta-btn" onClick={() => setTrialOpen(true)} style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", padding: "14px 32px", borderRadius: 10, fontSize: 16, fontWeight: 600, boxShadow: "0 0 30px rgba(124,58,237,0.35)" }}>
-            Start Free Trial
-          </button>
+          <a href="/signup" style={{ display: "inline-flex", alignItems: "center", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", padding: "14px 32px", borderRadius: 10, fontSize: 16, fontWeight: 600, boxShadow: "0 0 30px rgba(124,58,237,0.35)", textDecoration: "none" }}>
+            Get Started Free →
+          </a>
           <a href="#pricing" style={{ display: "inline-flex", alignItems: "center", padding: "14px 32px", borderRadius: 10, fontSize: 16, fontWeight: 500, border: "1px solid rgba(255,255,255,0.12)", color: "#e8e8f0", textDecoration: "none", background: "rgba(255,255,255,0.04)" }}>
-            View Plans →
+            View Plans
           </a>
         </div>
         <p style={{ marginTop: "1rem", fontSize: 13, color: "#6b7280" }}>No credit card required for trial · Instant activation</p>
@@ -307,15 +300,15 @@ export default function NorthHillLanding() {
                 <div style={{ fontSize: 13, color: "#6b7280", marginBottom: "1.25rem" }}>${plan.perMonth.toFixed(2)}/mo</div>
                 <p style={{ fontSize: 13, color: "#9ca3af", lineHeight: 1.5, marginBottom: "1.5rem" }}>{plan.description}</p>
               </div>
-              <button className="cta-btn" style={{ width: "100%", padding: "10px", borderRadius: 8, fontSize: 14, fontWeight: 600, background: plan.highlight ? "linear-gradient(135deg, #7c3aed, #4f46e5)" : "rgba(255,255,255,0.08)", color: "#fff", cursor: "pointer", border: "none" }}>
+              <a href="/signup" className="cta-btn" style={{ display: "block", width: "100%", padding: "10px", borderRadius: 8, fontSize: 14, fontWeight: 600, background: plan.highlight ? "linear-gradient(135deg, #7c3aed, #4f46e5)" : "rgba(255,255,255,0.08)", color: "#fff", cursor: "pointer", border: "none", textAlign: "center", textDecoration: "none" }}>
                 Get Started
-              </button>
+              </a>
             </div>
           ))}
         </div>
         <p style={{ textAlign: "center", marginTop: "1.5rem", fontSize: 13, color: "#6b7280" }}>
           Want to try first?{" "}
-          <button className="trial-link" onClick={() => setTrialOpen(true)}>Start your free 24-hour trial →</button>
+          <a href="/signup" className="trial-link">Start your free 24-hour trial →</a>
         </p>
       </section>
 
@@ -345,37 +338,6 @@ export default function NorthHillLanding() {
         <p style={{ fontSize: 13, color: "#4b5563" }}>© {new Date().getFullYear()} North Hill Systems LLC. All rights reserved.</p>
       </footer>
 
-      {/* TRIAL MODAL */}
-      {trialOpen && (
-        <div onClick={(e) => e.target === e.currentTarget && setTrialOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 200, padding: "1rem" }}>
-          <div style={{ background: "#111118", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "2.5rem", maxWidth: 440, width: "100%" }}>
-            {!trialSubmitted ? (
-              <>
-                <h3 style={{ fontFamily: "'DM Serif Display', serif", fontSize: 24, color: "#fff", marginBottom: 8 }}>Start your free trial</h3>
-                <p style={{ fontSize: 14, color: "#6b7280", marginBottom: "1.5rem", lineHeight: 1.6 }}>24 hours, no credit card required. We'll send your trial credentials to your email.</p>
-                <form onSubmit={handleTrialSubmit}>
-                  <input type="email" required placeholder="your@email.com" value={trialEmail} onChange={(e) => setTrialEmail(e.target.value)} style={{ width: "100%", padding: "12px 16px", borderRadius: 10, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", color: "#fff", fontSize: 15, marginBottom: "1rem", outline: "none" }} />
-                  <button type="submit" className="cta-btn" style={{ width: "100%", padding: "13px", borderRadius: 10, background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", fontSize: 15, fontWeight: 600, border: "none", cursor: "pointer" }}>
-                    Request Free Trial
-                  </button>
-                </form>
-                <button onClick={() => setTrialOpen(false)} style={{ background: "none", border: "none", color: "#6b7280", fontSize: 13, marginTop: "1rem", cursor: "pointer", width: "100%", textAlign: "center" }}>
-                  Cancel
-                </button>
-              </>
-            ) : (
-              <div style={{ textAlign: "center", padding: "1rem 0" }}>
-                <div style={{ fontSize: 48, marginBottom: "1rem" }}>✅</div>
-                <h3 style={{ fontFamily: "'DM Serif Display', serif", fontSize: 22, color: "#fff", marginBottom: 8 }}>You're all set!</h3>
-                <p style={{ fontSize: 14, color: "#9ca3af", lineHeight: 1.6, marginBottom: "1.5rem" }}>Check your inbox at <strong style={{ color: "#fff" }}>{trialEmail}</strong> — your trial credentials will arrive within a few minutes.</p>
-                <button onClick={() => { setTrialOpen(false); setTrialSubmitted(false); setTrialEmail(""); }} className="cta-btn" style={{ padding: "10px 24px", borderRadius: 10, background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", fontSize: 14, fontWeight: 600, border: "none", cursor: "pointer" }}>
-                  Close
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
