@@ -29,10 +29,15 @@ create policy "Users can view own orders"
   on public.orders for select
   using (auth.uid() = user_id);
 
--- Only service role can insert/update
-create policy "Service role manages orders"
-  on public.orders for all
-  using (auth.role() = 'service_role');
+-- Authenticated users can insert their own orders
+-- (the API route uses the service_role key which bypasses RLS entirely,
+--  but this policy ensures it also works if called as the user directly)
+create policy "Users can insert own orders"
+  on public.orders for insert
+  with check (auth.uid() = user_id);
+
+-- Only service role can update/delete (bypasses RLS automatically)
+-- No explicit policy needed — service_role key skips RLS by default.
 
 -- Auto-update timestamp
 create trigger on_order_updated

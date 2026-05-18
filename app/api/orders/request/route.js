@@ -6,10 +6,16 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SECRET_KEY
-);
+function getAdminClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SECRET_KEY;
+  if (!url || !key) {
+    throw new Error(
+      "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SECRET_KEY in .env.local"
+    );
+  }
+  return createClient(url, key, { auth: { persistSession: false } });
+}
 
 export async function POST(req) {
   try {
@@ -18,6 +24,8 @@ export async function POST(req) {
       planId, planName, planTerm, price,
       connections, userEmail, userName, userId,
     } = body;
+
+    const supabaseAdmin = getAdminClient();
 
     // ── 1. Save pending order to Supabase ──────────────────────
     const { error: dbError } = await supabaseAdmin
