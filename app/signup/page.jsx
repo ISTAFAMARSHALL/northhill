@@ -13,12 +13,13 @@ const S = {
 };
 
 export default function SignupPage() {
-  const [fullName, setFullName]   = useState("");
-  const [email, setEmail]         = useState("");
-  const [password, setPassword]   = useState("");
-  const [confirm, setConfirm]     = useState("");
-  const [loading, setLoading]     = useState(false);
-  const [error, setError]         = useState("");
+  const [fullName, setFullName]         = useState("");
+  const [email, setEmail]               = useState("");
+  const [password, setPassword]         = useState("");
+  const [confirm, setConfirm]           = useState("");
+  const [loading, setLoading]           = useState(false);
+  const [error, setError]               = useState("");
+  const [confirmEmail, setConfirmEmail] = useState(false);
   const supabase = createClient();
 
   const handleSignup = async (e) => {
@@ -29,10 +30,13 @@ export default function SignupPage() {
     if (password.length < 8)  { setError("Password must be at least 8 characters."); return; }
 
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName } },
+      options: {
+        data: { full_name: fullName },
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      },
     });
 
     if (error) {
@@ -41,9 +45,40 @@ export default function SignupPage() {
       return;
     }
 
-    // Redirect to plan selection after successful signup
-    window.location.href = "/plans";
+    // session is present → email confirmation disabled, go straight to plans
+    if (data.session) {
+      window.location.href = "/plans";
+      return;
+    }
+
+    // session is null → Supabase sent a confirmation email
+    setLoading(false);
+    setConfirmEmail(true);
   };
+
+  if (confirmEmail) {
+    return (
+      <div style={S.page}>
+        <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap');*{box-sizing:border-box;margin:0;padding:0}`}</style>
+        <div style={{ width: "100%", maxWidth: 420, textAlign: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "2.5rem", justifyContent: "center" }}>
+            <div style={{ width: 34, height: 34, background: "linear-gradient(135deg,#7c3aed,#4f46e5)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>⬡</div>
+            <span style={{ fontFamily: "'DM Serif Display',serif", fontSize: 20, color: "#fff" }}>North Hill Systems</span>
+          </div>
+          <div style={S.card}>
+            <div style={{ fontSize: 48, marginBottom: "1rem" }}>📬</div>
+            <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 22, color: "#fff", marginBottom: 8 }}>Check your inbox</h2>
+            <p style={{ fontSize: 14, color: "#9ca3af", lineHeight: 1.7, marginBottom: "1.5rem" }}>
+              We sent a confirmation link to <strong style={{ color: "#e8e8f0" }}>{email}</strong>. Click it to verify your account, then come back to pick your plan.
+            </p>
+            <a href="/plans" style={{ display: "block", padding: "12px", borderRadius: 9, background: "linear-gradient(135deg,#7c3aed,#4f46e5)", color: "#fff", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
+              I've confirmed — Pick a Plan →
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={S.page}>
