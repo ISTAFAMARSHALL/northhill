@@ -75,8 +75,7 @@ export async function POST(req) {
         html: `
           <div style="font-family:sans-serif;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e8e8f0;padding:2rem;border-radius:12px">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.5rem">
-              <div style="width:32px;height:32px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px">⬡</div>
-              <span style="font-size:18px;font-weight:600;color:#fff">North Hill Systems</span>
+              <img src="${process.env.NEXT_PUBLIC_SITE_URL}/logo.png" alt="North Hill Systems" style="height:40px;width:auto" />
             </div>
             <h2 style="color:#10b981;margin-bottom:0.5rem">Your service is live!</h2>
             <p style="color:#6b7280;margin-bottom:1.5rem">Hi ${userName || userEmail}, your <strong style="color:#e8e8f0">${planName} ${planTerm}</strong> subscription is now active. Here are your streaming credentials:</p>
