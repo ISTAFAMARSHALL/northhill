@@ -187,13 +187,9 @@ const TERMS = ["monthly", "quarterly", "annual"];
 const TERM_LABELS = { monthly: "Monthly", quarterly: "3 Months", annual: "12 Months" };
 
 export default function NorthHillLanding() {
-  const [activeTerm, setActiveTerm]   = useState("quarterly");
-  const [loggedIn, setLoggedIn]       = useState(false);
-  const [userEmail, setUserEmail]     = useState("");
-  const [trialOpen, setTrialOpen]     = useState(false);
-  const [trialEmail, setTrialEmail]   = useState("");
-  const [trialSubmitted, setTrialSubmitted] = useState(false);
-  const [supabaseSession, setSupabaseSession] = useState(null);
+  const [activeTerm, setActiveTerm] = useState("quarterly");
+  const [loggedIn, setLoggedIn]     = useState(false);
+  const [userEmail, setUserEmail]   = useState("");
 
   useEffect(() => {
     import("@/lib/supabase").then(({ createClient }) => {
@@ -201,50 +197,13 @@ export default function NorthHillLanding() {
         if (session?.user) {
           setLoggedIn(true);
           setUserEmail(session.user.email);
-          setSupabaseSession(session);
         }
       });
     });
   }, []);
 
   const openTrial = () => {
-    setTrialEmail(userEmail);
-    setTrialSubmitted(false);
-    setTrialOpen(true);
-  };
-
-  const handleTrialSubmit = async (e) => {
-    e.preventDefault();
-    if (!trialEmail) return;
-
-    // Not logged in — send to signup first, then back to /plans?trial=true
-    if (!loggedIn) {
-      window.location.href = "/signup?trial=true";
-      return;
-    }
-
-    // Logged in — create a real order + notify admin
-    try {
-      const user = supabaseSession?.user;
-      await fetch("/api/orders/request", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${supabaseSession?.access_token}`,
-        },
-        body: JSON.stringify({
-          planId:      "free-trial",
-          planName:    "Free Trial",
-          planTerm:    "trial",
-          price:       0,
-          connections: 1,
-          userEmail:   user?.email,
-          userName:    user?.user_metadata?.full_name || "",
-          userId:      user?.id,
-        }),
-      });
-    } catch (_) {}
-    setTrialSubmitted(true);
+    window.location.href = loggedIn ? "/plans?trial=true" : "/signup?trial=true";
   };
 
   const visiblePlans = PLANS.filter((p) => p.term === activeTerm);
@@ -391,66 +350,6 @@ export default function NorthHillLanding() {
         </div>
         <p style={{ fontSize: 13, color: "#4b5563" }}>© {new Date().getFullYear()} North Hill Systems LLC. All rights reserved.</p>
       </footer>
-
-      {/* TRIAL MODAL */}
-      {trialOpen && (
-        <div onClick={(e) => e.target === e.currentTarget && setTrialOpen(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 200, padding: "1rem" }}>
-          <div style={{ background: "#111118", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 20, padding: "2.5rem", maxWidth: 440, width: "100%" }}>
-            {!trialSubmitted ? (
-              <>
-                <h3 style={{ fontFamily: "'DM Serif Display', serif", fontSize: 24, color: "#fff", marginBottom: 8 }}>
-                  {loggedIn ? "Confirm your free trial" : "Start your free trial"}
-                </h3>
-                <p style={{ fontSize: 14, color: "#6b7280", marginBottom: "1.5rem", lineHeight: 1.6 }}>
-                  24 hours, no credit card required. We'll send your trial credentials to{" "}
-                  {loggedIn ? <strong style={{ color: "#e8e8f0" }}>{userEmail}</strong> : "your email"}{" "}
-                  within a few minutes.
-                </p>
-
-                {/* Order-style summary */}
-                <div style={{ background: "rgba(124,58,237,0.08)", border: "1px solid rgba(124,58,237,0.2)", borderRadius: 12, padding: "1.1rem 1.25rem", marginBottom: "1.5rem" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                    <span style={{ fontSize: 13, color: "#9ca3af" }}>Plan</span>
-                    <span style={{ fontSize: 13, color: "#e8e8f0", fontWeight: 500 }}>Free Trial · 24 Hours</span>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                    <span style={{ fontSize: 13, color: "#9ca3af" }}>Connections</span>
-                    <span style={{ fontSize: 13, color: "#e8e8f0" }}>1 simultaneous stream</span>
-                  </div>
-                  <div style={{ height: 1, background: "rgba(255,255,255,0.06)", margin: "10px 0" }} />
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ fontSize: 14, color: "#fff", fontWeight: 600 }}>Total due</span>
-                    <span style={{ fontSize: 18, color: "#10b981", fontWeight: 700 }}>Free</span>
-                  </div>
-                </div>
-
-                <form onSubmit={handleTrialSubmit}>
-                  {!loggedIn && (
-                    <input type="email" required placeholder="your@email.com" value={trialEmail} onChange={(e) => setTrialEmail(e.target.value)} style={{ width: "100%", padding: "12px 16px", borderRadius: 10, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", color: "#fff", fontSize: 15, marginBottom: "1rem", outline: "none", boxSizing: "border-box" }} />
-                  )}
-                  <button type="submit" className="cta-btn" style={{ width: "100%", padding: "13px", borderRadius: 10, background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", fontSize: 15, fontWeight: 600, border: "none", cursor: "pointer" }}>
-                    {loggedIn ? "Confirm & Request Trial →" : "Request Free Trial →"}
-                  </button>
-                </form>
-                <button onClick={() => setTrialOpen(false)} style={{ background: "none", border: "none", color: "#6b7280", fontSize: 13, marginTop: "1rem", cursor: "pointer", width: "100%", textAlign: "center" }}>
-                  Cancel
-                </button>
-              </>
-            ) : (
-              <div style={{ textAlign: "center", padding: "1rem 0" }}>
-                <div style={{ width: 60, height: 60, background: "rgba(16,185,129,0.15)", border: "1px solid rgba(16,185,129,0.3)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, margin: "0 auto 1.25rem" }}>✓</div>
-                <h3 style={{ fontFamily: "'DM Serif Display', serif", fontSize: 22, color: "#fff", marginBottom: 8 }}>Request received!</h3>
-                <p style={{ fontSize: 14, color: "#9ca3af", lineHeight: 1.6, marginBottom: "1.5rem" }}>
-                  Check <strong style={{ color: "#fff" }}>{trialEmail}</strong> — your trial credentials will arrive within a few minutes.
-                </p>
-                <button onClick={() => setTrialOpen(false)} className="cta-btn" style={{ padding: "10px 24px", borderRadius: 10, background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", fontSize: 14, fontWeight: 600, border: "none", cursor: "pointer" }}>
-                  Close
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
 
     </div>
   );

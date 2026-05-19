@@ -271,6 +271,37 @@ export default function PlanSelectionPage() {
           })}
         </div>
 
+        {/* Free Trial card */}
+        {(() => {
+          const trialPlan = { id: "free-trial", name: "Free Trial", connections: 1, term: "trial", termLabel: "24 Hours", price: 0 };
+          const isSelected = selected?.id === "free-trial";
+          return (
+            <div style={{ marginBottom: "2rem" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: "1rem" }}>
+                <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.06)" }} />
+                <span style={{ fontSize: 12, color: "#6b7280", whiteSpace: "nowrap" }}>or try before you buy</span>
+                <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.06)" }} />
+              </div>
+              <div className="pc" onClick={() => setSelected(trialPlan)}
+                style={{ ...S.card, position: "relative", background: isSelected ? "rgba(16,185,129,0.1)" : "rgba(255,255,255,0.03)", border: isSelected ? "2px solid #10b981" : "1px solid rgba(255,255,255,0.07)", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem", padding: "1.1rem 1.5rem", cursor: "pointer" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                  <div style={{ width: 38, height: 38, borderRadius: 9, background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.25)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>🎁</div>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: "#fff" }}>Free 24-Hour Trial</div>
+                    <div style={{ fontSize: 12, color: "#9ca3af" }}>1 connection · No credit card required</div>
+                  </div>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                  <span style={{ fontSize: 22, fontWeight: 700, color: "#10b981" }}>Free</span>
+                  <div style={{ padding: "8px 18px", borderRadius: 8, fontSize: 13, fontWeight: 600, background: isSelected ? "#10b981" : "rgba(255,255,255,0.06)", color: isSelected ? "#fff" : "#9ca3af" }}>
+                    {isSelected ? "Selected ✓" : "Select Trial"}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+
         {/* Request service CTA */}
         {selected && (
           <div style={{ position: "sticky", bottom: "1.5rem", display: "flex", justifyContent: "center" }}>
@@ -278,7 +309,9 @@ export default function PlanSelectionPage() {
               <div>
                 <span style={{ fontSize: 13, color: "#6b7280" }}>Selected: </span>
                 <span style={{ fontSize: 14, color: "#fff", fontWeight: 600 }}>{selected.name} {selected.termLabel}</span>
-                <span style={{ fontSize: 14, color: "#a78bfa", fontWeight: 700, marginLeft: 8 }}>${selected.price}</span>
+                <span style={{ fontSize: 14, fontWeight: 700, marginLeft: 8, color: selected.id === "free-trial" ? "#10b981" : "#a78bfa" }}>
+                  {selected.id === "free-trial" ? "Free" : `$${selected.price}`}
+                </span>
               </div>
               <button onClick={() => setConfirming(true)} style={{ padding: "11px 28px", borderRadius: 9, background: "linear-gradient(135deg,#7c3aed,#4f46e5)", color: "#fff", fontSize: 14, fontWeight: 600, border: "none", cursor: "pointer", whiteSpace: "nowrap" }}>
                 Request Service →
