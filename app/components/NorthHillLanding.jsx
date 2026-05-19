@@ -346,8 +346,10 @@ export default function NorthHillLanding() {
       <footer style={{ borderTop: "1px solid rgba(255,255,255,0.06)", padding: "2rem", textAlign: "center" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: "0.75rem" }}>
           <a href="/terms" style={{ fontSize: 13, color: "#6b7280", textDecoration: "none" }}>Terms of Service</a>
-          
-          <Image src="/logo.png" width={1024} height={1024} alt="North Hill Systems" loading="eager" priority style={{ height: 150, width: "auto" }} />
+
+          <a href="./" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>
+          <Image src="/logo.png" width={1024} height={1024} alt="North Hill Systems" loading="eager" priority style={{ height: 200, width: "auto" }} />
+          </a>
 
           <a href="/portal" style={{ fontSize: 13, color: "#6b7280", textDecoration: "none" }}>My Account</a>
         </div>
