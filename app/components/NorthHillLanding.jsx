@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const PLANS = [
   {
@@ -188,6 +188,15 @@ const TERM_LABELS = { monthly: "Monthly", quarterly: "3 Months", annual: "12 Mon
 
 export default function NorthHillLanding() {
   const [activeTerm, setActiveTerm] = useState("quarterly");
+  const [loggedIn, setLoggedIn]     = useState(false);
+
+  useEffect(() => {
+    import("@/lib/supabase").then(({ createClient }) => {
+      createClient().auth.getSession().then(({ data: { session } }) => {
+        setLoggedIn(!!session?.user);
+      });
+    });
+  }, []);
 
   const visiblePlans = PLANS.filter((p) => p.term === activeTerm);
 
@@ -300,8 +309,8 @@ export default function NorthHillLanding() {
                 <div style={{ fontSize: 13, color: "#6b7280", marginBottom: "1.25rem" }}>${plan.perMonth.toFixed(2)}/mo</div>
                 <p style={{ fontSize: 13, color: "#9ca3af", lineHeight: 1.5, marginBottom: "1.5rem" }}>{plan.description}</p>
               </div>
-              <a href="/signup" className="cta-btn" style={{ display: "block", width: "100%", padding: "10px", borderRadius: 8, fontSize: 14, fontWeight: 600, background: plan.highlight ? "linear-gradient(135deg, #7c3aed, #4f46e5)" : "rgba(255,255,255,0.08)", color: "#fff", cursor: "pointer", border: "none", textAlign: "center", textDecoration: "none" }}>
-                Get Started
+              <a href={loggedIn ? `/plans?plan=${plan.id}` : "/signup"} className="cta-btn" style={{ display: "block", width: "100%", padding: "10px", borderRadius: 8, fontSize: 14, fontWeight: 600, background: plan.highlight ? "linear-gradient(135deg, #7c3aed, #4f46e5)" : "rgba(255,255,255,0.08)", color: "#fff", cursor: "pointer", border: "none", textAlign: "center", textDecoration: "none" }}>
+                {loggedIn ? "Select Plan" : "Get Started"}
               </a>
             </div>
           ))}

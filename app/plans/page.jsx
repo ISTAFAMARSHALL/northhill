@@ -112,12 +112,22 @@ export default function PlanSelectionPage() {
   const [accessToken, setAccessToken] = useState(null);
   const supabase = createClient();
 
-  // Guard — must be logged in
+  // Guard — must be logged in; also pre-select plan from ?plan= query param
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session?.user) { window.location.href = "/signup"; return; }
       setUser(session.user);
       setAccessToken(session.access_token);
+
+      const planId = new URLSearchParams(window.location.search).get("plan");
+      if (planId) {
+        const match = PLANS.find(p => p.id === planId);
+        if (match) {
+          setSelected(match);
+          setTerm(match.term);
+          setConfirming(true);
+        }
+      }
     });
   }, []);
 
