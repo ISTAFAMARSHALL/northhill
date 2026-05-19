@@ -64,8 +64,7 @@ function LoginScreen({ onLogin }) {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap');*{box-sizing:border-box}`}</style>
       <div style={{ width: "100%", maxWidth: 420 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "2.5rem", justifyContent: "center" }}>
-          <div style={{ width: 36, height: 36, background: "linear-gradient(135deg,#7c3aed,#4f46e5)", borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17 }}>⬡</div>
-          <span style={{ fontFamily: "'DM Serif Display',serif", fontSize: 20, color: "#fff" }}>North Hill Systems</span>
+          <img src="/logo.png" alt="North Hill Systems" style={{ height: 40, width: "auto" }} />
         </div>
 
         <div style={{ ...S.card, padding: "2.25rem" }}>
@@ -112,8 +111,7 @@ function Dashboard({ user, subscription, onLogout }) {
 
       <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1.25rem 2rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(10,10,15,0.95)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 30, height: 30, background: "linear-gradient(135deg,#7c3aed,#4f46e5)", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>⬡</div>
-          <span style={{ fontFamily: "'DM Serif Display',serif", fontSize: 17, color: "#fff" }}>North Hill Systems</span>
+          <img src="/logo.png" alt="North Hill Systems" style={{ height: 36, width: "auto" }} />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
           <span style={{ fontSize: 13, color: "#6b7280" }}>{user?.email}</span>

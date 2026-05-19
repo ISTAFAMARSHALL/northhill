@@ -192,8 +192,7 @@ export default function PlanSelectionPage() {
       {/* Nav */}
       <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1.1rem 2rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(10,10,15,0.97)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 30, height: 30, background: "linear-gradient(135deg,#7c3aed,#4f46e5)", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>⬡</div>
-          <span style={{ fontFamily: "'DM Serif Display',serif", fontSize: 17, color: "#fff" }}>North Hill Systems</span>
+          <img src="/logo.png" alt="North Hill Systems" style={{ height: 36, width: "auto" }} />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           <span style={{ fontSize: 13, color: "#6b7280" }}>{user.email}</span>

@@ -226,8 +226,7 @@ export default function NorthHillLanding() {
       {/* NAV */}
       <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1.25rem 2rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(10,10,15,0.95)", position: "sticky", top: 0, zIndex: 100, backdropFilter: "blur(10px)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <div style={{ width: 32, height: 32, background: "linear-gradient(135deg, #7c3aed, #4f46e5)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>⬡</div>
-          <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 18, letterSpacing: "-0.3px", color: "#fff" }}>North Hill Systems</span>
+          <img src="/logo.png" alt="North Hill Systems" style={{ height: 36, width: "auto" }} />
         </div>
         <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
           <a href="#features" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>Features</a>
@@ -345,8 +344,7 @@ export default function NorthHillLanding() {
       {/* FOOTER */}
       <footer style={{ borderTop: "1px solid rgba(255,255,255,0.06)", padding: "2rem", textAlign: "center" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: "0.75rem" }}>
-          <div style={{ width: 24, height: 24, background: "linear-gradient(135deg, #7c3aed, #4f46e5)", borderRadius: 6, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12 }}>⬡</div>
-          <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 15, color: "#fff" }}>North Hill Systems LLC</span>
+          <img src="/logo.png" alt="North Hill Systems" style={{ height: 28, width: "auto" }} />
         </div>
         <p style={{ fontSize: 13, color: "#4b5563" }}>© {new Date().getFullYear()} North Hill Systems LLC. All rights reserved.</p>
       </footer>
