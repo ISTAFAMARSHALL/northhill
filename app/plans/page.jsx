@@ -190,9 +190,9 @@ export default function PlanSelectionPage() {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap');*{box-sizing:border-box;margin:0;padding:0}.pc:hover{transform:translateY(-3px);border-color:rgba(124,58,237,0.4)!important}`}</style>
 
       {/* Nav */}
-      <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1.1rem 2rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(10,10,15,0.97)" }}>
+      <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", height: 72, padding: "0 2rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(10,10,15,0.97)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <img src="/logo.png" alt="North Hill Systems" style={{ height: 160, width: "auto" }} />
+          <img src="/logo.png" alt="North Hill Systems" style={{ height: 56, width: "auto" }} />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           <span style={{ fontSize: 13, color: "#6b7280" }}>{user.email}</span>
