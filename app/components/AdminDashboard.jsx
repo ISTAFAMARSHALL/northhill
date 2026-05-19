@@ -170,7 +170,7 @@ function Dashboard({ user, accessToken, onSignOut }) {
     }
   };
 
-  useEffect(() => { fetchOrders(); }, []);
+  useEffect(() => { if (accessToken) fetchOrders(); }, [accessToken]);
 
   const handleSuccess = (orderId) => {
     setSuccessIds(prev => new Set([...prev, orderId]));
