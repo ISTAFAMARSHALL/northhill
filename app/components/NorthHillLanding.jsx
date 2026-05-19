@@ -226,7 +226,7 @@ export default function NorthHillLanding() {
       {/* NAV */}
       <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1.25rem 2rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(10,10,15,0.95)", position: "sticky", top: 0, zIndex: 100, backdropFilter: "blur(10px)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <img src="/logo.png" alt="North Hill Systems" style={{ height: 36, width: "auto" }} />
+          <img src="/logo.png" alt="North Hill Systems" style={{ height: 52, width: "auto" }} />
         </div>
         <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
           <a href="#features" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>Features</a>
@@ -344,7 +344,7 @@ export default function NorthHillLanding() {
       {/* FOOTER */}
       <footer style={{ borderTop: "1px solid rgba(255,255,255,0.06)", padding: "2rem", textAlign: "center" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: "0.75rem" }}>
-          <img src="/logo.png" alt="North Hill Systems" style={{ height: 28, width: "auto" }} />
+          <img src="/logo.png" alt="North Hill Systems" style={{ height: 40, width: "auto" }} />
         </div>
         <p style={{ fontSize: 13, color: "#4b5563" }}>© {new Date().getFullYear()} North Hill Systems LLC. All rights reserved.</p>
       </footer>
