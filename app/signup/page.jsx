@@ -67,7 +67,7 @@ export default function SignupPage() {
         <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap');*{box-sizing:border-box;margin:0;padding:0}`}</style>
         <div style={{ width: "100%", maxWidth: 420, textAlign: "center" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "2.5rem", justifyContent: "center" }}>
-            <img src="/logo.png" alt="North Hill Systems" style={{ height: 80, width: "auto" }} />
+            <img src="/logo.png" alt="North Hill Systems" style={{ height: 160, width: "auto" }} />
           </div>
           <div style={S.card}>
             <div style={{ fontSize: 48, marginBottom: "1rem" }}>📬</div>
