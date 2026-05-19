@@ -211,9 +211,17 @@ export default function NorthHillLanding() {
     setTrialOpen(true);
   };
 
-  const handleTrialSubmit = (e) => {
+  const handleTrialSubmit = async (e) => {
     e.preventDefault();
-    if (trialEmail) setTrialSubmitted(true);
+    if (!trialEmail) return;
+    try {
+      await fetch("/api/trial/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: trialEmail, name: userEmail ? userEmail.split("@")[0] : "" }),
+      });
+    } catch (_) {}
+    setTrialSubmitted(true);
   };
 
   const visiblePlans = PLANS.filter((p) => p.term === activeTerm);
