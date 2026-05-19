@@ -15,6 +15,8 @@ export default function AuthCallback() {
       return;
     }
 
+    const isTrial = new URLSearchParams(window.location.search).get("trial") === "true";
+
     createClient()
       .auth.exchangeCodeForSession(code)
       .then(({ error }) => {
@@ -22,7 +24,7 @@ export default function AuthCallback() {
           setStatus("Confirmation failed: " + error.message);
           setTimeout(() => { window.location.href = "/signup"; }, 3000);
         } else {
-          window.location.href = "/plans";
+          window.location.href = isTrial ? "/plans?trial=true" : "/plans";
         }
       });
   }, []);

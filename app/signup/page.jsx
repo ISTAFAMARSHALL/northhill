@@ -22,6 +22,11 @@ export default function SignupPage() {
   const [confirmEmail, setConfirmEmail] = useState(false);
   const supabase = createClient();
 
+  const isTrial = typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("trial") === "true";
+
+  const destination = isTrial ? "/plans?trial=true" : "/plans";
+
   const handleSignup = async (e) => {
     e.preventDefault();
     setError("");
@@ -35,7 +40,7 @@ export default function SignupPage() {
       password,
       options: {
         data: { full_name: fullName },
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?trial=${isTrial}`,
       },
     });
 
@@ -45,9 +50,9 @@ export default function SignupPage() {
       return;
     }
 
-    // session is present → email confirmation disabled, go straight to plans
+    // session is present → email confirmation disabled, go straight
     if (data.session) {
-      window.location.href = "/plans";
+      window.location.href = destination;
       return;
     }
 
@@ -69,10 +74,10 @@ export default function SignupPage() {
             <div style={{ fontSize: 48, marginBottom: "1rem" }}>📬</div>
             <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 22, color: "#fff", marginBottom: 8 }}>Check your inbox</h2>
             <p style={{ fontSize: 14, color: "#9ca3af", lineHeight: 1.7, marginBottom: "1.5rem" }}>
-              We sent a confirmation link to <strong style={{ color: "#e8e8f0" }}>{email}</strong>. Click it to verify your account, then come back to pick your plan.
+              We sent a confirmation link to <strong style={{ color: "#e8e8f0" }}>{email}</strong>. Click it to verify your account, then come back.
             </p>
-            <a href="/plans" style={{ display: "block", padding: "12px", borderRadius: 9, background: "linear-gradient(135deg,#7c3aed,#4f46e5)", color: "#fff", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
-              I've confirmed — Pick a Plan →
+            <a href={destination} style={{ display: "block", padding: "12px", borderRadius: 9, background: "linear-gradient(135deg,#7c3aed,#4f46e5)", color: "#fff", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
+              {isTrial ? "I've confirmed — Request Trial →" : "I've confirmed — Pick a Plan →"}
             </a>
           </div>
         </div>

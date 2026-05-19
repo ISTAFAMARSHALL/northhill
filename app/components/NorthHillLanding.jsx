@@ -193,6 +193,7 @@ export default function NorthHillLanding() {
   const [trialOpen, setTrialOpen]     = useState(false);
   const [trialEmail, setTrialEmail]   = useState("");
   const [trialSubmitted, setTrialSubmitted] = useState(false);
+  const [supabaseSession, setSupabaseSession] = useState(null);
 
   useEffect(() => {
     import("@/lib/supabase").then(({ createClient }) => {
@@ -200,6 +201,7 @@ export default function NorthHillLanding() {
         if (session?.user) {
           setLoggedIn(true);
           setUserEmail(session.user.email);
+          setSupabaseSession(session);
         }
       });
     });
@@ -214,11 +216,32 @@ export default function NorthHillLanding() {
   const handleTrialSubmit = async (e) => {
     e.preventDefault();
     if (!trialEmail) return;
+
+    // Not logged in — send to signup first, then back to /plans?trial=true
+    if (!loggedIn) {
+      window.location.href = "/signup?trial=true";
+      return;
+    }
+
+    // Logged in — create a real order + notify admin
     try {
-      await fetch("/api/trial/request", {
+      const user = supabaseSession?.user;
+      await fetch("/api/orders/request", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: trialEmail, name: userEmail ? userEmail.split("@")[0] : "" }),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${supabaseSession?.access_token}`,
+        },
+        body: JSON.stringify({
+          planId:      "free-trial",
+          planName:    "Free Trial",
+          planTerm:    "trial",
+          price:       0,
+          connections: 1,
+          userEmail:   user?.email,
+          userName:    user?.user_metadata?.full_name || "",
+          userId:      user?.id,
+        }),
       });
     } catch (_) {}
     setTrialSubmitted(true);
