@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase";
 
 const S = {
@@ -29,7 +30,7 @@ function LoginScreen({ onGitHubLogin, error, loading }) {
       <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap');*{box-sizing:border-box;margin:0;padding:0}`}</style>
       <div style={{ width: "100%", maxWidth: 380 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "2rem", justifyContent: "center" }}>
-          <img src="/logo.png" alt="North Hill Systems" style={{ height: 100, width: "auto" }} />
+          <Image src="/logo.png" width={500} height={500} alt="North Hill Systems" style={{ height: 100, width: "auto" }} />
         </div>
         <div style={S.card}>
           <h1 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 22, color: "#fff", marginBottom: 6 }}>Admin Panel</h1>
@@ -187,7 +188,7 @@ function Dashboard({ user, accessToken, onSignOut }) {
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <img src="/logo.png" alt="North Hill Systems" style={{ height: 100, width: "auto" }} />
+          <Image src="/logo.png" width={500} height={500} alt="North Hill Systems" style={{ height: 100, width: "auto" }} />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           <span style={{ fontSize: 13, color: "#6b7280" }}>{user.email}</span>
