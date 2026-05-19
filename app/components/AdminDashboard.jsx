@@ -169,6 +169,55 @@ function Dashboard({ user, accessToken, onSignOut }) {
       setLoading(false);
     }
   };
+  
+  // Comment out above before using the below code //
+  // // PATCH: Step 1 — wipe state
+  // const [wiping,      setWiping]      = useState(false);
+  // const [wipeResult,  setWipeResult]  = useState(null);
+
+  // const fetchOrders = async () => {
+  //   setLoading(true);
+  //   setError("");
+  //   try {
+  //     const res = await fetch("/api/admin/orders", {
+  //       headers: { "Authorization": `Bearer ${accessToken}` },
+  //     });
+  //     const data = await res.json();
+  //     if (!res.ok) throw new Error(data.error || "Failed to load orders");
+  //     setOrders(data.orders || []);
+  //   } catch (err) {
+  //     setError(err.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // // PATCH: Step 2 — wipe handler
+  // const handleWipeTestData = async () => {
+  //   if (!window.confirm(
+  //     "⚠️ This will DELETE all orders and subscriptions from Supabase " +
+  //     "AND all invoices and customers from Wave.\n\n" +
+  //     "Only use this during testing. Are you sure?"
+  //   )) return;
+
+  //   setWiping(true);
+  //   setWipeResult(null);
+  //   try {
+  //     const res = await fetch("/api/dev/cleanup", {
+  //       method: "POST",
+  //       headers: { "Authorization": `Bearer ${accessToken}` },
+  //     });
+  //     const data = await res.json();
+  //     if (!res.ok) throw new Error(data.error);
+  //     setWipeResult(data.results);
+  //     setOrders([]); // clear table immediately
+  //   } catch (err) {
+  //     alert(`Wipe failed: ${err.message}`);
+  //   } finally {
+  //     setWiping(false);
+  //   }
+  // };
+
 
   useEffect(() => { if (accessToken) fetchOrders(); }, [accessToken]);
 
@@ -192,9 +241,50 @@ function Dashboard({ user, accessToken, onSignOut }) {
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           <span style={{ fontSize: 13, color: "#6b7280" }}>{user.email}</span>
+            {/* PATCH: Step 3 — Wipe Test Data button (non-production only) */}
+            {/* {process.env.NODE_ENV !== "production" && (
+              <button
+                onClick={handleWipeTestData}
+                disabled={wiping}
+                style={{
+                  padding: "7px 14px",
+                  borderRadius: 8,
+                  background: "rgba(239,68,68,0.15)",
+                  border: "1px solid rgba(239,68,68,0.3)",
+                  color: "#ef4444",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                {wiping ? "Wiping…" : "🗑 Wipe Test Data"}
+              </button>
+            )} */}
           <button onClick={onSignOut} style={{ ...S.btn, background: "rgba(255,255,255,0.06)", fontSize: 13, padding: "7px 14px" }}>Sign Out</button>
         </div>
       </div>
+
+      {/* PATCH: Step 4 — Wipe result banner */}
+      {/* {wipeResult && (
+        <div style={{
+          background: "rgba(16,185,129,0.1)",
+          border: "1px solid rgba(16,185,129,0.3)",
+          borderRadius: 8,
+          padding: "10px 14px",
+          fontSize: 13,
+          color: "#10b981",
+          marginBottom: "1rem",
+        }}>
+          ✅ Wiped: {wipeResult.wave.invoicesDeleted} Wave invoices,
+          {" "}{wipeResult.wave.customersDeleted} Wave customers,
+          Supabase orders + subscriptions cleared.
+          {wipeResult.wave.errors.length > 0 && (
+            <span style={{ color: "#fbbf24", marginLeft: 8 }}>
+              ⚠️ {wipeResult.wave.errors.length} warning(s) — check console.
+            </span>
+          )}
+        </div>
+      )} */}
 
       {/* Stats */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))", gap: "1rem", marginBottom: "1.5rem" }}>
