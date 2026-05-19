@@ -224,9 +224,9 @@ export default function NorthHillLanding() {
       `}</style>
 
       {/* NAV */}
-      <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", height: 72, padding: "0 2rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(10,10,15,0.95)", position: "sticky", top: 0, zIndex: 100, backdropFilter: "blur(10px)" }}>
+      <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", height: 120, padding: "0 2rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(10,10,15,0.95)", position: "sticky", top: 0, zIndex: 100, backdropFilter: "blur(10px)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <img src="/logo.png" alt="North Hill Systems" style={{ height: 56, width: "auto" }} />
+          <img src="/logo.png" alt="North Hill Systems" style={{ height: 100, width: "auto" }} />
         </div>
         <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
           <a href="#features" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>Features</a>
