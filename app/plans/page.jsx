@@ -112,21 +112,36 @@ export default function PlanSelectionPage() {
   const [accessToken, setAccessToken] = useState(null);
   const supabase = createClient();
 
-  // Guard — must be logged in; also pre-select plan from ?plan= query param
+  // Guard — must be logged in; also pre-select plan or handle ?trial=true
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session?.user) { window.location.href = "/signup"; return; }
+      const params = new URLSearchParams(window.location.search);
+
+      if (!session?.user) {
+        const dest = params.get("trial") === "true" ? "/signup?trial=true" : "/signup";
+        window.location.href = dest;
+        return;
+      }
+
       setUser(session.user);
       setAccessToken(session.access_token);
 
-      const planId = new URLSearchParams(window.location.search).get("plan");
+      // Pre-select a specific plan
+      const planId = params.get("plan");
       if (planId) {
         const match = PLANS.find(p => p.id === planId);
-        if (match) {
-          setSelected(match);
-          setTerm(match.term);
-          setConfirming(true);
-        }
+        if (match) { setSelected(match); setTerm(match.term); setConfirming(true); }
+        return;
+      }
+
+      // Free trial flow — auto-open the trial confirmation modal
+      if (params.get("trial") === "true") {
+        const trialPlan = {
+          id: "free-trial", name: "Free Trial", connections: 1,
+          term: "trial", termLabel: "24 Hours", price: 0,
+        };
+        setSelected(trialPlan);
+        setConfirming(true);
       }
     });
   }, []);
