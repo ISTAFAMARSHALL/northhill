@@ -61,8 +61,8 @@ export async function POST(req) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from:    "orders@northhillsystems.com",   // update to your domain
-        to:      process.env.ADMIN_EMAIL,          // your email in .env.local
+        from:    process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev",
+        to:      process.env.ADMIN_NOTIFY_EMAIL || process.env.ADMIN_EMAIL,
         subject: `🆕 New Service Request — ${userName || userEmail} · ${planName} ${planTerm}`,
         html: `
           <div style="font-family:sans-serif;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e8e8f0;padding:2rem;border-radius:12px">
