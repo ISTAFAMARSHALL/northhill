@@ -276,15 +276,8 @@ export default function CustomerPortal() {
   const supabase = createClient();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser(session.user);
-        fetchSubscription(session.user.id);
-      } else {
-        setLoading(false);
-      }
-    });
-
+    // onAuthStateChange fires synchronously with INITIAL_SESSION on subscribe,
+    // passing the session already in storage — no separate getSession() needed.
     const { data: { subscription: authSub } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         setUser(session.user);
@@ -323,13 +316,8 @@ export default function CustomerPortal() {
     );
   }
 
-  if (!user) return (
-    <LoginScreen onLogin={() => {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (session) { setUser(session.user); fetchSubscription(session.user.id); }
-      });
-    }} />
-  );
+  // onAuthStateChange handles the SIGNED_IN event automatically after login
+  if (!user) return <LoginScreen onLogin={() => {}} />;
 
   return <Dashboard user={user} subscription={subscription} onLogout={handleLogout} />;
 }
