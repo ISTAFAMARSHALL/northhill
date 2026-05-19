@@ -23,17 +23,10 @@ const S = {
   }),
 };
 
-function LoginScreen({ onLogin, error, loading }) {
-  const [email, setEmail]       = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onLogin(email, password);
-  };
-
+function LoginScreen({ onGitHubLogin, error, loading }) {
   return (
     <div style={{ ...S.page, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap');*{box-sizing:border-box;margin:0;padding:0}`}</style>
       <div style={{ width: "100%", maxWidth: 380 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "2rem", justifyContent: "center" }}>
           <div style={{ width: 32, height: 32, background: "linear-gradient(135deg,#7c3aed,#4f46e5)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>⬡</div>
@@ -41,17 +34,12 @@ function LoginScreen({ onLogin, error, loading }) {
         </div>
         <div style={S.card}>
           <h1 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 22, color: "#fff", marginBottom: 6 }}>Admin Panel</h1>
-          <p style={{ fontSize: 13, color: "#6b7280", marginBottom: "1.5rem" }}>Sign in with your admin credentials.</p>
+          <p style={{ fontSize: 13, color: "#6b7280", marginBottom: "1.5rem" }}>Sign in with the GitHub account linked to your Supabase admin profile.</p>
           {error && <div style={S.error}>{error}</div>}
-          <form onSubmit={handleSubmit}>
-            <label style={S.label}>Email</label>
-            <input type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="admin@example.com" style={S.input} />
-            <label style={S.label}>Password</label>
-            <input type="password" required value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" style={{ ...S.input, marginBottom: "1.5rem" }} />
-            <button type="submit" style={{ ...S.btn, width: "100%" }} disabled={loading}>
-              {loading ? "Signing in…" : "Sign In →"}
-            </button>
-          </form>
+          <button onClick={onGitHubLogin} style={{ ...S.btn, width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 10 }} disabled={loading}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            {loading ? "Redirecting…" : "Continue with GitHub"}
+          </button>
         </div>
       </div>
     </div>
@@ -324,33 +312,43 @@ export default function AdminDashboard() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleLogin = async (email, password) => {
+  const handleGitHubLogin = async () => {
     setLoginError("");
     setLoginLoading(true);
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "github",
+      options: { redirectTo: `${window.location.origin}/admin` },
+    });
     if (error) {
       setLoginError(error.message);
-    } else if (data.user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
-      await supabase.auth.signOut();
-      setLoginError("Access denied. This panel is admin-only.");
+      setLoginLoading(false);
     }
-    setLoginLoading(false);
+    // On success the browser redirects to GitHub — loading stays true
   };
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
   };
 
+  // After GitHub OAuth redirect, check if the logged-in user is the admin
+  useEffect(() => {
+    if (user && process.env.NEXT_PUBLIC_ADMIN_EMAIL && user.email !== process.env.NEXT_PUBLIC_ADMIN_EMAIL) {
+      supabase.auth.signOut();
+      setLoginError("Access denied. This panel is admin-only.");
+    }
+  }, [user]);
+
   if (loading) {
     return (
       <div style={{ ...S.page, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');*{box-sizing:border-box;margin:0;padding:0}`}</style>
         <p style={{ color: "#6b7280" }}>Loading…</p>
       </div>
     );
   }
 
   if (!user) {
-    return <LoginScreen onLogin={handleLogin} error={loginError} loading={loginLoading} />;
+    return <LoginScreen onGitHubLogin={handleGitHubLogin} error={loginError} loading={loginLoading} />;
   }
 
   return <Dashboard user={user} accessToken={accessToken} onSignOut={handleSignOut} />;
