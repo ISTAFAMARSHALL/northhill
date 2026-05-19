@@ -31,7 +31,7 @@ export default function AuthCallback() {
 
   return (
     <div style={{ fontFamily: "'DM Sans','Segoe UI',sans-serif", background: "#0a0a0f", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: "1rem" }}>
-      <img src="/logo.png" alt="North Hill Systems" style={{ height: 52, width: "auto" }} />
+      <img src="/logo.png" alt="North Hill Systems" style={{ height: 80, width: "auto" }} />
       <p style={{ color: "#9ca3af", fontSize: 15 }}>{status}</p>
     </div>
   );
