@@ -112,7 +112,7 @@ function Dashboard({ user, subscription, onLogout }) {
 
       <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", height: 120, padding: "0 2rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(10,10,15,0.95)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <Image src="/logo.png" width={500} height={500} alt="North Hill Systems" style={{ height: 100, width: "auto" }} />
+          <Image src="/logo.png" width={1024} height={1024} alt="North Hill Systems" style={{ height: 100, width: "auto" }} />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
           <span style={{ fontSize: 13, color: "#6b7280" }}>{user?.email}</span>
