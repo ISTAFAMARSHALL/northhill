@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+
 import { PLANS } from "@/lib/plans"
 import { FEATURES } from "@/lib/feature-list"
 
@@ -65,6 +66,13 @@ export default function NorthHillLanding() {
         .term-btn { transition: all 0.15s ease; cursor: pointer; border: none; }
         .cta-btn  { transition: all 0.15s ease; cursor: pointer; border: none; }
         .cta-btn:hover { opacity: 0.85; transform: scale(1.02); }
+        .nav-link:hover { color: #e8e8f0 !important; }
+        .plan-btn:hover { opacity: 0.88; transform: scale(1.01); }
+        .portal-btn:hover { opacity: 0.85; background: rgba(255,255,255,0.08) !important; color: #e8e8f0 !important; }
+        .footer-link:hover { color: #a78bfa !important; }
+        .disabled-card:hover { cursor: pointer; opacity: 0.7 !important; }
+        .sub-banner-btn:hover { opacity: 0.88; }
+        .view-plans-link:hover { opacity: 0.85; }
       `}</style>
 
       {/* NAV — always fully active */}
@@ -73,10 +81,10 @@ export default function NorthHillLanding() {
           <Image src="/logo.png" width={1024} height={1024} alt="North Hill Systems" loading="eager" priority style={{ height: 250, width: "auto" }} />
         </a>
         <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
-          <a href="#features" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>Features</a>
-          <a href="#pricing"  style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>Pricing</a>
-          <a href="#faq"      style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>FAQ</a>
-          <a href="/portal"   style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>My Account</a>
+          <a href="#features" className="nav-link" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none", transition: "color 0.15s ease" }}>Features</a>
+          <a href="#pricing" className="nav-link" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none", transition: "color 0.15s ease" }}>Pricing</a>
+          <a href="#faq" className="nav-link" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none", transition: "color 0.15s ease" }}>FAQ</a>
+          <a href="/portal" className="nav-link" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none", transition: "color 0.15s ease" }}>My Account</a>
           <button className="cta-btn" onClick={openTrial} style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", padding: "8px 18px", borderRadius: 8, fontSize: 14, fontWeight: 500 }}>
             {planButtonsDisabled ? "My Portal →" : "Free Trial"}
           </button>
@@ -94,14 +102,14 @@ export default function NorthHillLanding() {
           Premium Streaming.<br />
           <span style={{ background: "linear-gradient(135deg, #a78bfa, #60a5fa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>No Contracts.</span>
         </h1>
-        <p style={{ fontSize: "1.15rem", color: "#9ca3af", maxWidth: 540, margin: "0 auto 2.5rem", lineHeight: 1.7 }}>
-          {"15,000+ live channels, 42,000 movies, 7,800 shows — starting at $20/month. Your cable bill's replacement is here."}
+        <p style={{ fontSize: "1.15rem", color: "#9ca3af", maxWidth: 520, margin: "0 auto 2.5rem", lineHeight: 1.7 }}>
+          {"15,000+ live channels, 42,000+ movies, 7,800+ shows. Starting at $20/month. Your cable bill's replacement is here."}
         </p>
         <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
           <button className="cta-btn" onClick={openTrial} style={{ display: "inline-flex", alignItems: "center", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", padding: "14px 32px", borderRadius: 10, fontSize: 16, fontWeight: 600, boxShadow: "0 0 30px rgba(124,58,237,0.35)" }}>
             {planButtonsDisabled ? "Go to My Portal →" : "Start Free Trial →"}
           </button>
-          <a href="#pricing" style={{ display: "inline-flex", alignItems: "center", padding: "14px 32px", borderRadius: 10, fontSize: 16, fontWeight: 500, border: "1px solid rgba(255,255,255,0.12)", color: "#e8e8f0", textDecoration: "none", background: "rgba(255,255,255,0.04)" }}>
+          <a href="#pricing" className="view-plans-link" style={{ display: "inline-flex", alignItems: "center", padding: "14px 32px", borderRadius: 10, fontSize: 16, fontWeight: 500, border: "1px solid rgba(255,255,255,0.12)", color: "#e8e8f0", textDecoration: "none", background: "rgba(255,255,255,0.04)", transition: "all 0.15s ease" }}>
             View Plans
           </a>
         </div>
@@ -142,7 +150,7 @@ export default function NorthHillLanding() {
                 You already have an active subscription. To add another line, visit your portal.
               </span>
             </div>
-            <a href="/portal" style={{ background: "linear-gradient(135deg,#7c3aed,#4f46e5)", color: "#fff", padding: "8px 20px", borderRadius: 8, fontSize: 13, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>
+            <a href="/portal" className="sub-banner-btn" style={{ background: "linear-gradient(135deg,#7c3aed,#4f46e5)", color: "#fff", padding: "8px 20px", borderRadius: 8, fontSize: 13, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap", transition: "opacity 0.15s ease" }}>
               Go to Portal →
             </a>
           </div>
@@ -231,22 +239,22 @@ export default function NorthHillLanding() {
         </h2>
         {[
           ["What devices are supported?",        "Our service works on Smart TVs, Firestick, Android TV, iOS, Android, MAG boxes, and most IPTV players like TiviMate, IPTV Smarters, and Perfect Player."],
-          ["How fast is activation?",            "Most subscriptions are activated within minutes. You'll receive your credentials by email immediately after payment."],
+          ["How fast is activation?",            "Your credentials land in your inbox the same day — usually within 15 minutes of payment confirmation."],
           ["What is a connection?",              "Each connection is one simultaneous stream. A 2-connection plan lets you watch on two devices at the same time."],
           ["Can I upgrade my plan later?",       "Yes — you can upgrade connections or switch to a longer term at any time. Contact support and we'll prorate the difference."],
           ["Is there a free trial?",             "Yes, we offer a 24-hour free trial so you can verify the service works on your device before committing. No credit card required."],
-          ["What payment methods do you accept?","We accept all major credit/debit cards and multiple digital payment options. Payment is processed securely at checkout."],
+          ["What payment methods do you accept?","We accept all major credit and debit cards via secure Wave invoice. You'll receive your invoice by email and can pay online in minutes."],
         ].map(([q, a]) => <FAQItem key={q} question={q} answer={a} />)}
       </section>
 
       {/* FOOTER */}
       <footer style={{ borderTop: "1px solid rgba(255,255,255,0.06)", padding: "2rem", textAlign: "center" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: "0.75rem" }}>
-          <a href="/terms" style={{ fontSize: 13, color: "#6b7280", textDecoration: "none" }}>Terms of Service</a>
+          <a href="/terms" className="footer-link" style={{ fontSize: 13, color: "#6b7280", textDecoration: "none", transition: "color 0.15s ease" }}>Terms of Service</a>
           <a href="./" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>
             <Image src="/logo.png" width={1024} height={1024} alt="North Hill Systems" loading="eager" priority style={{ height: 200, width: "auto" }} />
           </a>
-          <a href="/portal" style={{ fontSize: 13, color: "#6b7280", textDecoration: "none" }}>My Account</a>
+          <a href="/portal" className="footer-link" style={{ fontSize: 13, color: "#6b7280", textDecoration: "none", transition: "color 0.15s ease" }}>My Account</a>
         </div>
         <p style={{ fontSize: 13, color: "#4b5563" }}>© {new Date().getFullYear()} North Hill Systems LLC. All rights reserved.</p>
       </footer>
@@ -295,15 +303,16 @@ function PlanCard({ plan, loggedIn, disabled, checkingSession }) {
       {disabled ? (
         <div
           onClick={() => window.location.href = "/portal"}
-          style={{ display: "block", width: "100%", padding: "10px", borderRadius: 8, fontSize: 13, fontWeight: 600, background: "rgba(255,255,255,0.04)", color: "#4b5563", border: "1px solid rgba(255,255,255,0.06)", textAlign: "center", cursor: "not-allowed", userSelect: "none" }}
+          className="disabled-card"
+          style={{ display: "block", width: "100%", padding: "10px", borderRadius: 8, fontSize: 13, fontWeight: 600, background: "rgba(255,255,255,0.04)", color: "#4b5563", border: "1px solid rgba(255,255,255,0.06)", textAlign: "center", cursor: "pointer", userSelect: "none", transition: "opacity 0.15s ease" }}
         >
           Manage in Portal →
         </div>
       ) : (
         <a
           href={loggedIn ? `/plans?plan=${plan.id}` : "/signup"}
-          className="cta-btn"
-          style={{ display: "block", width: "100%", padding: "10px", borderRadius: 8, fontSize: 14, fontWeight: 600, background: plan.highlight ? "linear-gradient(135deg, #7c3aed, #4f46e5)" : "rgba(255,255,255,0.08)", color: "#fff", cursor: checkingSession ? "wait" : "pointer", border: "none", textAlign: "center", textDecoration: "none" }}
+          className="cta-btn plan-btn"
+          style={{ display: "block", width: "100%", padding: "10px", borderRadius: 8, fontSize: 14, fontWeight: 600, background: plan.highlight ? "linear-gradient(135deg, #7c3aed, #4f46e5)" : "rgba(255,255,255,0.08)", color: "#fff", cursor: checkingSession ? "wait" : "pointer", border: "none", textAlign: "center", textDecoration: "none", transition: "all 0.15s ease" }}
         >
           {loggedIn ? "Select Plan" : "Get Started"}
         </a>

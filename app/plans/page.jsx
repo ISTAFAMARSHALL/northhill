@@ -64,9 +64,21 @@ function SuccessScreen({ plan, email }) {
       <div style={{ maxWidth: 480, width: "100%", textAlign: "center" }}>
         <div style={{ width: 72, height: 72, background: "rgba(16,185,129,0.15)", border: "1px solid rgba(16,185,129,0.3)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 32, margin: "0 auto 1.5rem" }}>✓</div>
         <h1 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 28, color: "#fff", marginBottom: "0.75rem" }}>Request received!</h1>
-        <p style={{ fontSize: 15, color: "#9ca3af", lineHeight: 1.7, marginBottom: "2rem" }}>
-          Your <strong style={{ color: "#e8e8f0" }}>{plan.name} {plan.termLabel}</strong> request has been sent. Check <strong style={{ color: "#e8e8f0" }}>{email}</strong> — you'll receive a Wave invoice shortly. Once paid, your IPTV credentials will appear in your portal automatically.
+        <p style={{ fontSize: 15, color: "#9ca3af", lineHeight: 1.7, marginBottom: "0.75rem" }}>
+          Your <strong style={{ color: "#e8e8f0" }}>{plan.name} {plan.termLabel}</strong> request is in. Here's what happens next:
         </p>
+        <div style={{ background: "rgba(124,58,237,0.08)", border: "1px solid rgba(124,58,237,0.2)", borderRadius: 12, padding: "1.1rem 1.5rem", marginBottom: "2rem", textAlign: "left" }}>
+          {[
+            { step: "1", text: `A Wave invoice is on its way to ${email} — check your inbox now.` },
+            { step: "2", text: "Pay with any major card directly from the email — takes about 2 minutes." },
+            { step: "3", text: "Your streaming credentials will arrive in a separate email, usually within 15 minutes of payment." },
+          ].map(({ step, text }) => (
+            <div key={step} style={{ display: "flex", gap: 12, marginBottom: step === "3" ? 0 : "0.75rem", alignItems: "flex-start" }}>
+              <div style={{ width: 22, height: 22, borderRadius: "50%", background: "rgba(124,58,237,0.3)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: "#a78bfa", flexShrink: 0, marginTop: 1 }}>{step}</div>
+              <p style={{ fontSize: 14, color: "#9ca3af", margin: 0, lineHeight: 1.6 }}>{text}</p>
+            </div>
+          ))}
+        </div>
         <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center", flexWrap: "wrap" }}>
           <a href="/portal" style={{ padding: "11px 28px", borderRadius: 9, background: "linear-gradient(135deg,#7c3aed,#4f46e5)", color: "#fff", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
             Go to My Portal →
@@ -189,14 +201,12 @@ export default function PlanSelectionPage() {
 
       {/* NAV — always fully active */}
       <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", height: 80, padding: "0 1rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(10,10,15,0.95)", position: "sticky", top: 0, zIndex: 100, backdropFilter: "blur(10px)" }}>
-        <a href="./" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>
+        <div style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>
           <Image src="/logo.png" width={1024} height={1024} alt="North Hill Systems" loading="eager" priority style={{ height: 250, width: "auto" }} />
-        </a>
-        <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
-          <span style={{ fontSize: 16, color: "#9ca3af" }}>{user.email}</span>
-          <button className="cta-btn"  style={{ color: "#a78bfa", padding: "8px 18px", borderRadius: 8, fontSize: 16, fontWeight: 500 }}>
-           My Portal →
-          </button>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <span style={{ fontSize: 16, color: "#6b7280" }}>{user.email}</span>
+          <a href="/portal" style={{ fontSize: 18, color: "#a78bfa", textDecoration: "none" }}>My Portal →</a>
         </div>
       </nav>
 
