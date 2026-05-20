@@ -42,22 +42,9 @@ export async function GET(req) {
     console.log(`[cron] Checking subscriptions expiring on ${targetDate} (${days} days out)`);
 
     // Fetch active subscriptions expiring on exactly this date
-    // Join with users table to get email + name for the invoice
     const { data: subs, error } = await supabase
       .from("subscriptions")
-      .select(`
-        id,
-        plan_name,
-        plan_term,
-        connections,
-        price,
-        end_date,
-        user_id,
-        users (
-          email,
-          raw_user_meta_data
-        )
-      `)
+      .select("id, plan_name, plan_term, connections, price, end_date, user_id")
       .eq("status", "active")
       .eq("end_date", targetDate);
 
@@ -79,10 +66,18 @@ export async function GET(req) {
     const failed = [];
 
     for (const sub of subs) {
-      const userEmail = sub.users?.email;
-      const userName  = sub.users?.raw_user_meta_data?.full_name
-                     || sub.users?.raw_user_meta_data?.name
-                     || userEmail;
+      // Fetch user email + name separately from auth.users via the orders table
+      // (auth.users isn't directly queryable via the JS client without admin rights on that table)
+      const { data: order } = await supabase
+        .from("orders")
+        .select("user_email, user_name")
+        .eq("user_id", sub.user_id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+
+      const userEmail = order?.user_email;
+      const userName  = order?.user_name || userEmail;
 
       if (!userEmail) {
         console.warn(`[cron] Skipping sub ${sub.id} — no email found`);
@@ -91,10 +86,10 @@ export async function GET(req) {
       }
 
       // Use the subscription's stored price if available,
-      // otherwise fall back to looking it up from the orders table
+      // otherwise fall back to the most recent order
       let price = sub.price;
       if (!price) {
-        const { data: order } = await supabase
+        const { data: priceOrder } = await supabase
           .from("orders")
           .select("price")
           .eq("user_id", sub.user_id)
@@ -102,7 +97,7 @@ export async function GET(req) {
           .order("created_at", { ascending: false })
           .limit(1)
           .single();
-        price = order?.price;
+        price = priceOrder?.price ?? order?.price;
       }
 
       if (!price || parseFloat(price) <= 0) {
