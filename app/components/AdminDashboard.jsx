@@ -270,13 +270,15 @@ function Dashboard({ user, accessToken, onSignOut }) {
     <div style={S.page}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap');*{box-sizing:border-box;margin:0;padding:0}`}</style>
 
-      {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <Image src="/logo.png" width={1024} height={1024} alt="North Hill Systems" loading="eager" priority style={{ height: 100, width: "auto" }} />
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <span style={{ fontSize: 13, color: "#6b7280" }}>{user.email}</span>
+
+      {/* NAV — always fully active */}
+      <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
+        <a href="" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>
+          <Image src="/logo.png" width={1024} height={1024} alt="North Hill Systems" loading="eager" priority style={{ height: 250, width: "auto" }} />
+        </a>
+        <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
+          <span style={{ fontSize: 16, color: "#9ca3af" }}>{user.email}</span>
+
             {/* PATCH: Step 3 — Wipe Test Data button (non-production only) */}
             {/* {process.env.NODE_ENV !== "production" && (
               <button
@@ -296,9 +298,12 @@ function Dashboard({ user, accessToken, onSignOut }) {
                 {wiping ? "Wiping…" : "🗑 Wipe Test Data"}
               </button>
             )} */}
-          <button onClick={onSignOut} style={{ ...S.btn, background: "rgba(255,255,255,0.06)", fontSize: 13, padding: "7px 14px" }}>Sign Out</button>
+
+          <button className="cta-btn"  onClick={onSignOut} style={{ background: "rgba(255,255,255,0.06)", color: "#fff", padding: "8px 18px", borderRadius: 8, fontSize: 14, fontWeight: 500 }}>
+           Sign Out 
+          </button>
         </div>
-      </div>
+      </nav>
 
       {/* PATCH: Step 4 — Wipe result banner */}
       {/* {wipeResult && (

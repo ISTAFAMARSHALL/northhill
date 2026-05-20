@@ -8,22 +8,22 @@ import { createClient } from "@/lib/supabase";
 // Shared plan data — single source of truth
 // ─────────────────────────────────────────
 export const PLANS = [
-  { id: "solo-monthly",       name: "Solo",     connections: 1, term: "monthly",   termLabel: "1 Month",   price: 13,  perMonth: 13,    badge: null,          highlight: false, description: "Perfect for a single screen",    months: 1  },
-  { id: "solo-quarterly",     name: "Solo",     connections: 1, term: "quarterly", termLabel: "3 Months",  price: 33,  perMonth: 11,    badge: "Save $6",     highlight: false, description: "Best solo value",                months: 3  },
-  { id: "solo-annual",        name: "Solo",     connections: 1, term: "annual",    termLabel: "12 Months", price: 99,  perMonth: 8.25,  badge: "Save $57",    highlight: false, description: "Lowest price per month",         months: 12 },
-  { id: "standard-monthly",   name: "Standard", connections: 2, term: "monthly",   termLabel: "1 Month",   price: 22,  perMonth: 22,    badge: null,          highlight: false, description: "Share with a partner",           months: 1  },
-  { id: "standard-quarterly", name: "Standard", connections: 2, term: "quarterly", termLabel: "3 Months",  price: 55,  perMonth: 18.33, badge: "Most Popular", highlight: true,  description: "Best overall value",             months: 3  },
-  { id: "standard-annual",    name: "Standard", connections: 2, term: "annual",    termLabel: "12 Months", price: 159, perMonth: 13.25, badge: "Best Deal",    highlight: false, description: "Maximum savings",                months: 12 },
-  { id: "family-monthly",     name: "Family",   connections: 3, term: "monthly",   termLabel: "1 Month",   price: 28,  perMonth: 28,    badge: null,          highlight: false, description: "Three simultaneous streams",     months: 1  },
-  { id: "family-quarterly",   name: "Family",   connections: 3, term: "quarterly", termLabel: "3 Months",  price: 72,  perMonth: 24,    badge: null,          highlight: false, description: "Family savings",                 months: 3  },
-  { id: "family-annual",      name: "Family",   connections: 3, term: "annual",    termLabel: "12 Months", price: 199, perMonth: 16.58, badge: null,          highlight: false, description: "Best family rate",               months: 12 },
-  { id: "premium-monthly",    name: "Premium",  connections: 4, term: "monthly",   termLabel: "1 Month",   price: 35,  perMonth: 35,    badge: null,          highlight: false, description: "Power user setup",               months: 1  },
-  { id: "premium-quarterly",  name: "Premium",  connections: 4, term: "quarterly", termLabel: "3 Months",  price: 90,  perMonth: 30,    badge: null,          highlight: false, description: "Quarterly premium value",        months: 3  },
-  { id: "max-monthly",        name: "Max",      connections: 5, term: "monthly",   termLabel: "1 Month",   price: 42,  perMonth: 42,    badge: null,          highlight: false, description: "Full household coverage",        months: 1  },
-  { id: "max-quarterly",      name: "Max",      connections: 5, term: "quarterly", termLabel: "3 Months",  price: 115, perMonth: 38.33, badge: null,          highlight: false, description: "Max streams, max savings",       months: 3  },
+  { id: "solo-monthly",       name: "Solo",     connections: 1, term: "monthly",   termLabel: "1 Month",   price: 13,  perMonth: 13,    badge: null,           highlight: false, description: "Perfect for a single screen",  months: 1  },
+  { id: "solo-quarterly",     name: "Solo",     connections: 1, term: "quarterly", termLabel: "3 Months",  price: 33,  perMonth: 11,    badge: "Save $6",      highlight: false, description: "Best solo value",              months: 3  },
+  { id: "solo-annual",        name: "Solo",     connections: 1, term: "annual",    termLabel: "12 Months", price: 99,  perMonth: 8.25,  badge: "Save $57",     highlight: false, description: "Lowest price per month",       months: 12 },
+  { id: "standard-monthly",   name: "Standard", connections: 2, term: "monthly",   termLabel: "1 Month",   price: 22,  perMonth: 22,    badge: null,           highlight: false, description: "Share with a partner",         months: 1  },
+  { id: "standard-quarterly", name: "Standard", connections: 2, term: "quarterly", termLabel: "3 Months",  price: 55,  perMonth: 18.33, badge: "Most Popular", highlight: true,  description: "Best overall value",           months: 3  },
+  { id: "standard-annual",    name: "Standard", connections: 2, term: "annual",    termLabel: "12 Months", price: 159, perMonth: 13.25, badge: "Best Deal",    highlight: false, description: "Maximum savings",              months: 12 },
+  { id: "family-monthly",     name: "Family",   connections: 3, term: "monthly",   termLabel: "1 Month",   price: 28,  perMonth: 28,    badge: null,           highlight: false, description: "Three simultaneous streams",   months: 1  },
+  { id: "family-quarterly",   name: "Family",   connections: 3, term: "quarterly", termLabel: "3 Months",  price: 72,  perMonth: 24,    badge: null,           highlight: false, description: "Family savings",               months: 3  },
+  { id: "family-annual",      name: "Family",   connections: 3, term: "annual",    termLabel: "12 Months", price: 199, perMonth: 16.58, badge: null,           highlight: false, description: "Best family rate",             months: 12 },
+  { id: "premium-monthly",    name: "Premium",  connections: 4, term: "monthly",   termLabel: "1 Month",   price: 35,  perMonth: 35,    badge: null,           highlight: false, description: "Power user setup",             months: 1  },
+  { id: "premium-quarterly",  name: "Premium",  connections: 4, term: "quarterly", termLabel: "3 Months",  price: 90,  perMonth: 30,    badge: null,           highlight: false, description: "Quarterly premium value",      months: 3  },
+  { id: "max-monthly",        name: "Max",      connections: 5, term: "monthly",   termLabel: "1 Month",   price: 42,  perMonth: 42,    badge: null,           highlight: false, description: "Full household coverage",      months: 1  },
+  { id: "max-quarterly",      name: "Max",      connections: 5, term: "quarterly", termLabel: "3 Months",  price: 115, perMonth: 38.33, badge: null,           highlight: false, description: "Max streams, max savings",     months: 3  },
 ];
 
-const TERMS      = ["monthly", "quarterly", "annual"];
+const TERMS       = ["monthly", "quarterly", "annual"];
 const TERM_LABELS = { monthly: "Monthly", quarterly: "3 Months", annual: "12 Months" };
 
 const S = {
@@ -44,7 +44,6 @@ function ConfirmModal({ plan, user, onConfirm, onCancel, loading }) {
           You're requesting the <strong style={{ color: "#e8e8f0" }}>{plan.name} {plan.termLabel}</strong> plan. We'll send you a Wave invoice at <strong style={{ color: "#e8e8f0" }}>{user?.email}</strong> within a few hours. Your service activates once payment is received.
         </p>
 
-        {/* Order summary */}
         <div style={{ background: "rgba(124,58,237,0.08)", border: "1px solid rgba(124,58,237,0.2)", borderRadius: 12, padding: "1.1rem 1.25rem", marginBottom: "1.5rem" }}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
             <span style={{ fontSize: 13, color: "#9ca3af" }}>Plan</span>
@@ -103,19 +102,21 @@ function SuccessScreen({ plan, email }) {
 // Main Plan Selection Page
 // ─────────────────────────────────────────
 export default function PlanSelectionPage() {
-  const [user, setUser]           = useState(null);
-  const [activeTerm, setTerm]     = useState("quarterly");
-  const [selected, setSelected]   = useState(null);
-  const [confirming, setConfirming]   = useState(false);
-  const [loading, setLoading]         = useState(false);
-  const [submitted, setSubmitted]     = useState(false);
-  const [error, setError]             = useState("");
-  const [accessToken, setAccessToken] = useState(null);
+  const [user,         setUser]         = useState(null);
+  const [activeTerm,   setTerm]         = useState("quarterly");
+  const [selected,     setSelected]     = useState(null);
+  const [confirming,   setConfirming]   = useState(false);
+  const [loading,      setLoading]      = useState(false);
+  const [submitted,    setSubmitted]    = useState(false);
+  const [error,        setError]        = useState("");
+  const [accessToken,  setAccessToken]  = useState(null);
+  // Hide free trial card when user already has an active subscription
+  const [hasActiveSub, setHasActiveSub] = useState(false);
+
   const supabase = createClient();
 
-  // Guard — must be logged in; also pre-select plan or handle ?trial=true
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       const params = new URLSearchParams(window.location.search);
 
       if (!session?.user) {
@@ -127,7 +128,17 @@ export default function PlanSelectionPage() {
       setUser(session.user);
       setAccessToken(session.access_token);
 
-      // Pre-select a specific plan
+      // Check if user already has an active subscription
+      // If so, hide the free trial card
+      const { data: subs } = await supabase
+        .from("subscriptions")
+        .select("id")
+        .eq("user_id", session.user.id)
+        .eq("status", "active");
+
+      if (subs && subs.length > 0) setHasActiveSub(true);
+
+      // Pre-select a specific plan from URL param
       const planId = params.get("plan");
       if (planId) {
         const match = PLANS.find(p => p.id === planId);
@@ -135,8 +146,8 @@ export default function PlanSelectionPage() {
         return;
       }
 
-      // Free trial flow — auto-open the trial confirmation modal
-      if (params.get("trial") === "true") {
+      // Free trial flow — only if user has no active sub
+      if (params.get("trial") === "true" && (!subs || subs.length === 0)) {
         const trialPlan = {
           id: "free-trial", name: "Free Trial", connections: 1,
           term: "trial", termLabel: "24 Hours", price: 0,
@@ -158,7 +169,7 @@ export default function PlanSelectionPage() {
       const res = await fetch("/api/orders/request", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type":  "application/json",
           "Authorization": `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
@@ -184,20 +195,26 @@ export default function PlanSelectionPage() {
   };
 
   if (submitted && selected) return <SuccessScreen plan={selected} email={user?.email} />;
-  if (!user) return <div style={{ ...S.page, display: "flex", alignItems: "center", justifyContent: "center" }}><p style={{ color: "#6b7280" }}>Loading…</p></div>;
+  if (!user) return (
+    <div style={{ ...S.page, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <p style={{ color: "#6b7280" }}>Loading…</p>
+    </div>
+  );
 
   return (
     <div style={S.page}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap');*{box-sizing:border-box;margin:0;padding:0}.pc:hover{transform:translateY(-3px);border-color:rgba(124,58,237,0.4)!important}`}</style>
 
-      {/* Nav */}
-      <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", height: 120, padding: "0 2rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(10,10,15,0.97)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <Image src="/logo.png" width={1024} height={1024} alt="North Hill Systems" loading="eager" priority style={{ height: 100, width: "auto" }} />
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <span style={{ fontSize: 13, color: "#6b7280" }}>{user.email}</span>
-          <a href="/portal" style={{ fontSize: 13, color: "#a78bfa", textDecoration: "none" }}>My Portal →</a>
+      {/* NAV — always fully active */}
+      <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", height: 80, padding: "0 1rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(10,10,15,0.95)", position: "sticky", top: 0, zIndex: 100, backdropFilter: "blur(10px)" }}>
+        <a href="./" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>
+          <Image src="/logo.png" width={1024} height={1024} alt="North Hill Systems" loading="eager" priority style={{ height: 250, width: "auto" }} />
+        </a>
+        <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
+          <span style={{ fontSize: 16, color: "#9ca3af" }}>{user.email}</span>
+          <button className="cta-btn"  style={{ color: "#a78bfa", padding: "8px 18px", borderRadius: 8, fontSize: 16, fontWeight: 500 }}>
+           My Portal →
+          </button>
         </div>
       </nav>
 
@@ -271,9 +288,9 @@ export default function PlanSelectionPage() {
           })}
         </div>
 
-        {/* Free Trial card */}
-        {(() => {
-          const trialPlan = { id: "free-trial", name: "Free Trial", connections: 1, term: "trial", termLabel: "24 Hours", price: 0 };
+        {/* Free Trial card — hidden when user already has an active subscription */}
+        {!hasActiveSub && (() => {
+          const trialPlan  = { id: "free-trial", name: "Free Trial", connections: 1, term: "trial", termLabel: "24 Hours", price: 0 };
           const isSelected = selected?.id === "free-trial";
           return (
             <div style={{ marginBottom: "2rem" }}>
@@ -283,7 +300,7 @@ export default function PlanSelectionPage() {
                 <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.06)" }} />
               </div>
               <div className="pc" onClick={() => setSelected(trialPlan)}
-                style={{ ...S.card, position: "relative", background: isSelected ? "rgba(16,185,129,0.1)" : "rgba(255,255,255,0.03)", border: isSelected ? "2px solid #10b981" : "1px solid rgba(255,255,255,0.07)", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem", padding: "1.1rem 1.5rem", cursor: "pointer" }}>
+                style={{ ...S.card, background: isSelected ? "rgba(16,185,129,0.1)" : "rgba(255,255,255,0.03)", border: isSelected ? "2px solid #10b981" : "1px solid rgba(255,255,255,0.07)", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem", padding: "1.1rem 1.5rem", cursor: "pointer" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
                   <div style={{ width: 38, height: 38, borderRadius: 9, background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.25)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>🎁</div>
                   <div>
