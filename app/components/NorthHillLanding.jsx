@@ -2,31 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { PLANS } from "@/lib/plans"
 
-const PLANS = [
-  { id: "solo-monthly",      name: "Solo",     connections: 1, term: "monthly",    termLabel: "1 Month",   price: 13,  badge: null,          highlight: false, perMonth: 13,    description: "Perfect for a single screen"   },
-  { id: "solo-quarterly",    name: "Solo",     connections: 1, term: "quarterly",  termLabel: "3 Months",  price: 33,  badge: "Save $6",     highlight: false, perMonth: 11,    description: "Best solo value"               },
-  { id: "solo-annual",       name: "Solo",     connections: 1, term: "annual",     termLabel: "12 Months", price: 99,  badge: "Save $57",    highlight: false, perMonth: 8.25,  description: "Lowest price per month"        },
-  { id: "standard-monthly",  name: "Standard", connections: 2, term: "monthly",    termLabel: "1 Month",   price: 22,  badge: null,          highlight: false, perMonth: 22,    description: "Share with a partner"          },
-  { id: "standard-quarterly",name: "Standard", connections: 2, term: "quarterly",  termLabel: "3 Months",  price: 55,  badge: "Most Popular",highlight: true,  perMonth: 18.33, description: "Best overall value"            },
-  { id: "standard-annual",   name: "Standard", connections: 2, term: "annual",     termLabel: "12 Months", price: 159, badge: "Best Deal",   highlight: false, perMonth: 13.25, description: "Maximum savings"               },
-  { id: "family-monthly",    name: "Family",   connections: 3, term: "monthly",    termLabel: "1 Month",   price: 28,  badge: null,          highlight: false, perMonth: 28,    description: "Three simultaneous streams"    },
-  { id: "family-quarterly",  name: "Family",   connections: 3, term: "quarterly",  termLabel: "3 Months",  price: 72,  badge: null,          highlight: false, perMonth: 24,    description: "Family savings"                },
-  { id: "family-annual",     name: "Family",   connections: 3, term: "annual",     termLabel: "12 Months", price: 199, badge: null,          highlight: false, perMonth: 16.58, description: "Best family rate"              },
-  { id: "premium-monthly",   name: "Premium",  connections: 4, term: "monthly",    termLabel: "1 Month",   price: 35,  badge: null,          highlight: false, perMonth: 35,    description: "Power user setup"              },
-  { id: "premium-quarterly", name: "Premium",  connections: 4, term: "quarterly",  termLabel: "3 Months",  price: 90,  badge: null,          highlight: false, perMonth: 30,    description: "Quarterly premium value"       },
-  { id: "max-monthly",       name: "Max",      connections: 5, term: "monthly",    termLabel: "1 Month",   price: 42,  badge: null,          highlight: false, perMonth: 42,    description: "Full household coverage"       },
-  { id: "max-quarterly",     name: "Max",      connections: 5, term: "quarterly",  termLabel: "3 Months",  price: 115, badge: null,          highlight: false, perMonth: 38.33, description: "Max streams, max savings"      },
-];
-
-const FEATURES = [
-  { icon: "📡", title: "99.9% Uptime",       desc: "Rock-solid servers with industry-leading reliability" },
-  { icon: "📺", title: "EPG Channel Guides",  desc: "Full electronic program guides on all channels"      },
-  { icon: "🎬", title: "Thousands of VOD",    desc: "Movies and TV shows available on demand, 24/7"       },
-  { icon: "⚡", title: "Instant Activation",  desc: "Your service is live within minutes of payment"      },
-  { icon: "🌍", title: "All Content Types",   desc: "Sports, international, news, entertainment & more"   },
-  { icon: "🛠️", title: "24hr Free Trial",     desc: "Try before you commit — no credit card required"     },
-];
+import { FEATURES } from "@/lib/feature-list"
 
 const TERMS       = ["monthly", "quarterly", "annual"];
 const TERM_LABELS = { monthly: "Monthly", quarterly: "3 Months", annual: "12 Months" };
@@ -118,7 +96,7 @@ export default function NorthHillLanding() {
           <span style={{ background: "linear-gradient(135deg, #a78bfa, #60a5fa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>No Contracts.</span>
         </h1>
         <p style={{ fontSize: "1.15rem", color: "#9ca3af", maxWidth: 540, margin: "0 auto 2.5rem", lineHeight: 1.7 }}>
-          Thousands of live channels, on-demand movies & shows, full EPG guides — starting at $13/month. Cut the cable bill for good.
+          {"15,000+ live channels, 42,000 movies, 7,800 shows — starting at $20/month. Your cable bill's replacement is here."}
         </p>
         <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
           <button className="cta-btn" onClick={openTrial} style={{ display: "inline-flex", alignItems: "center", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", padding: "14px 32px", borderRadius: 10, fontSize: 16, fontWeight: 600, boxShadow: "0 0 30px rgba(124,58,237,0.35)" }}>

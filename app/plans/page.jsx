@@ -3,25 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase";
-
-// ─────────────────────────────────────────
-// Shared plan data — single source of truth
-// ─────────────────────────────────────────
-export const PLANS = [
-  { id: "solo-monthly",       name: "Solo",     connections: 1, term: "monthly",   termLabel: "1 Month",   price: 13,  perMonth: 13,    badge: null,           highlight: false, description: "Perfect for a single screen",  months: 1  },
-  { id: "solo-quarterly",     name: "Solo",     connections: 1, term: "quarterly", termLabel: "3 Months",  price: 33,  perMonth: 11,    badge: "Save $6",      highlight: false, description: "Best solo value",              months: 3  },
-  { id: "solo-annual",        name: "Solo",     connections: 1, term: "annual",    termLabel: "12 Months", price: 99,  perMonth: 8.25,  badge: "Save $57",     highlight: false, description: "Lowest price per month",       months: 12 },
-  { id: "standard-monthly",   name: "Standard", connections: 2, term: "monthly",   termLabel: "1 Month",   price: 22,  perMonth: 22,    badge: null,           highlight: false, description: "Share with a partner",         months: 1  },
-  { id: "standard-quarterly", name: "Standard", connections: 2, term: "quarterly", termLabel: "3 Months",  price: 55,  perMonth: 18.33, badge: "Most Popular", highlight: true,  description: "Best overall value",           months: 3  },
-  { id: "standard-annual",    name: "Standard", connections: 2, term: "annual",    termLabel: "12 Months", price: 159, perMonth: 13.25, badge: "Best Deal",    highlight: false, description: "Maximum savings",              months: 12 },
-  { id: "family-monthly",     name: "Family",   connections: 3, term: "monthly",   termLabel: "1 Month",   price: 28,  perMonth: 28,    badge: null,           highlight: false, description: "Three simultaneous streams",   months: 1  },
-  { id: "family-quarterly",   name: "Family",   connections: 3, term: "quarterly", termLabel: "3 Months",  price: 72,  perMonth: 24,    badge: null,           highlight: false, description: "Family savings",               months: 3  },
-  { id: "family-annual",      name: "Family",   connections: 3, term: "annual",    termLabel: "12 Months", price: 199, perMonth: 16.58, badge: null,           highlight: false, description: "Best family rate",             months: 12 },
-  { id: "premium-monthly",    name: "Premium",  connections: 4, term: "monthly",   termLabel: "1 Month",   price: 35,  perMonth: 35,    badge: null,           highlight: false, description: "Power user setup",             months: 1  },
-  { id: "premium-quarterly",  name: "Premium",  connections: 4, term: "quarterly", termLabel: "3 Months",  price: 90,  perMonth: 30,    badge: null,           highlight: false, description: "Quarterly premium value",      months: 3  },
-  { id: "max-monthly",        name: "Max",      connections: 5, term: "monthly",   termLabel: "1 Month",   price: 42,  perMonth: 42,    badge: null,           highlight: false, description: "Full household coverage",      months: 1  },
-  { id: "max-quarterly",      name: "Max",      connections: 5, term: "quarterly", termLabel: "3 Months",  price: 115, perMonth: 38.33, badge: null,           highlight: false, description: "Max streams, max savings",     months: 3  },
-];
+import { PLANS } from "@/lib/plans"
 
 const TERMS       = ["monthly", "quarterly", "annual"];
 const TERM_LABELS = { monthly: "Monthly", quarterly: "3 Months", annual: "12 Months" };
