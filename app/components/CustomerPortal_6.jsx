@@ -60,13 +60,13 @@ function AddSubscriptionModal({ activeCount, onConfirm, onCancel }) {
         <div style={{ display: "flex", gap: "0.75rem" }}>
           <button
             onClick={onCancel}
-            style={{ flex: 1, padding: "11px", borderRadius: 9, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#9ca3af", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+            className="modal-cancel" style={{ flex: 1, padding: "11px", borderRadius: 9, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#9ca3af", fontSize: 14, fontWeight: 600, cursor: "pointer", transition: "all 0.15s ease" }}
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
-            style={{ flex: 2, padding: "11px", borderRadius: 9, background: "linear-gradient(135deg,#7c3aed,#4f46e5)", border: "none", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+            className="modal-confirm" style={{ flex: 2, padding: "11px", borderRadius: 9, background: "linear-gradient(135deg,#7c3aed,#4f46e5)", border: "none", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer", transition: "opacity 0.15s ease" }}
           >
             Yes, Add Another Line →
           </button>
@@ -98,10 +98,24 @@ function LoginScreen({ onLogin }) {
 
   return (
     <div style={{ ...S.page, display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem" }}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap');*{box-sizing:border-box}`}</style>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap');
+        *{box-sizing:border-box}
+        .portal-nav-link:hover { color: #e8e8f0 !important; }
+        .portal-cta:hover { opacity: 0.88; transform: scale(1.01); }
+        .portal-ghost:hover { background: rgba(255,255,255,0.1) !important; color: #e8e8f0 !important; }
+        .portal-add-btn:hover { background: rgba(124,58,237,0.25) !important; border-color: rgba(124,58,237,0.6) !important; }
+        .portal-support:hover { opacity: 0.88; }
+        .portal-copy-btn:hover { background: rgba(255,255,255,0.12) !important; color: #e8e8f0 !important; }
+        .portal-toggle-btn:hover { background: rgba(255,255,255,0.12) !important; color: #e8e8f0 !important; }
+        .portal-signout:hover { background: rgba(255,255,255,0.1) !important; color: #e8e8f0 !important; }
+        .portal-renew-link:hover { color: #f87171 !important; }
+        .modal-cancel:hover { background: rgba(255,255,255,0.1) !important; }
+        .modal-confirm:hover { opacity: 0.88; }
+      `}</style>
       <div style={{ width: "100%", maxWidth: 420 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "-5rem", justifyContent: "center" }}>
-          <Image src="/logo.png" width={1024} height={1024} alt="North Hill Systems" loading="eager" priority style={{ height: 350, width: "auto" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "2.5rem", justifyContent: "center" }}>
+          <img src="/logo.png" alt="North Hill Systems" style={{ height: 160, width: "auto" }} />
         </div>
         <div style={{ ...S.card, padding: "2.25rem" }}>
           <h1 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 24, color: "#fff", marginBottom: 6 }}>Welcome back</h1>
@@ -112,17 +126,17 @@ function LoginScreen({ onLogin }) {
             <input type="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="you@email.com" style={S.input} />
             <label style={S.label}>Password</label>
             <input type="password" required value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" style={{ ...S.input, marginBottom: "1.5rem" }} />
-            <button type="submit" style={S.btnPrimary} disabled={loading}>
+            <button type="submit" className="login-submit" style={{ ...S.btnPrimary, transition: "opacity 0.15s ease" }} disabled={loading}>
               {loading ? "Signing in…" : "Sign In"}
             </button>
           </form>
           <div style={{ textAlign: "center", marginTop: "1.25rem" }}>
-            <a href="/" style={{ fontSize: 13, color: "#6b7280", textDecoration: "none" }}>← Back to home</a>
+            <a href="/" className="login-back" style={{ fontSize: 13, color: "#6b7280", textDecoration: "none", transition: "color 0.15s ease" }}>← Back to home</a>
           </div>
         </div>
         <p style={{ textAlign: "center", fontSize: 13, color: "#4b5563", marginTop: "1.5rem" }}>
           Don't have an account?{" "}
-          <a href="/#pricing" style={{ color: "#a78bfa", textDecoration: "none" }}>View plans →</a>
+          <a href="/#pricing" className="login-plans" style={{ color: "#a78bfa", textDecoration: "none", transition: "color 0.15s ease" }}>View plans →</a>
         </p>
       </div>
     </div>
@@ -152,7 +166,7 @@ function SubscriptionCard({ subscription, index }) {
       {days !== null && days <= 0 && (
         <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 12, padding: "1rem 1.25rem", display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ fontSize: 18 }}>🔴</span>
-          <span style={{ fontSize: 14, color: "#ef4444" }}>Subscription {index + 1} has expired. <a href="/#pricing" style={{ color: "#ef4444", fontWeight: 600 }}>Renew now →</a></span>
+          <span style={{ fontSize: 14, color: "#ef4444" }}>Subscription {index + 1} has expired. <a href="/#pricing" className="portal-renew-link" style={{ color: "#ef4444", fontWeight: 600, transition: "color 0.15s ease" }}>Renew now →</a></span>
         </div>
       )}
 
@@ -235,20 +249,35 @@ function Dashboard({ user, subscriptions, onLogout }) {
 
   return (
     <div style={S.page}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap');*{box-sizing:border-box}`}</style>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap');
+        *{box-sizing:border-box}
+        .portal-nav-link:hover { color: #e8e8f0 !important; }
+        .portal-cta:hover { opacity: 0.88; transform: scale(1.01); }
+        .portal-ghost:hover { background: rgba(255,255,255,0.1) !important; color: #e8e8f0 !important; }
+        .portal-add-btn:hover { background: rgba(124,58,237,0.25) !important; border-color: rgba(124,58,237,0.6) !important; }
+        .portal-support:hover { opacity: 0.88; }
+        .portal-copy-btn:hover { background: rgba(255,255,255,0.12) !important; color: #e8e8f0 !important; }
+        .portal-toggle-btn:hover { background: rgba(255,255,255,0.12) !important; color: #e8e8f0 !important; }
+        .portal-signout:hover { background: rgba(255,255,255,0.1) !important; color: #e8e8f0 !important; }
+        .portal-renew-link:hover { color: #f87171 !important; }
+        .modal-cancel:hover { background: rgba(255,255,255,0.1) !important; }
+        .modal-confirm:hover { opacity: 0.88; }
+      `}</style>
 
-      <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", height: 120, padding: "0 2rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(10,10,15,0.95)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      {/* NAV — always fully active */}
+      <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", height: 80, padding: "0 1rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(10,10,15,0.95)", position: "sticky", top: 0, zIndex: 100, backdropFilter: "blur(10px)" }}>
+        <div style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>
           <Image src="/logo.png" width={1024} height={1024} alt="North Hill Systems" loading="eager" priority style={{ height: 250, width: "auto" }} />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
           <span style={{ fontSize: 13, color: "#6b7280" }}>{user?.email}</span>
-          <button onClick={onLogout} style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#9ca3af", padding: "7px 16px", borderRadius: 8, fontSize: 13, cursor: "pointer" }}>
+          <button onClick={onLogout} className="portal-signout" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#9ca3af", padding: "7px 16px", borderRadius: 8, fontSize: 13, cursor: "pointer", transition: "all 0.15s ease" }}>
             Sign out
           </button>
         </div>
       </nav>
-
+      
       <div style={{ maxWidth: 820, margin: "0 auto", padding: "3rem 2rem" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem", marginBottom: "2.5rem" }}>
           <div>
@@ -265,7 +294,7 @@ function Dashboard({ user, subscriptions, onLogout }) {
           {activeCount > 0 && (
             <button
               onClick={() => setShowAddModal(true)}
-              style={{ background: "rgba(124,58,237,0.15)", border: "1px solid rgba(124,58,237,0.4)", color: "#a78bfa", padding: "10px 20px", borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}
+              className="portal-add-btn" style={{ background: "rgba(124,58,237,0.15)", border: "1px solid rgba(124,58,237,0.4)", color: "#a78bfa", padding: "10px 20px", borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap", transition: "all 0.15s ease" }}
             >
               + Get Additional Subscription
             </button>
@@ -280,10 +309,10 @@ function Dashboard({ user, subscriptions, onLogout }) {
               {"Pick a plan and get your credentials in your inbox — usually within 15 minutes."}
             </p>
             <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center", flexWrap: "wrap" }}>
-              <a href="/#pricing" style={{ display: "inline-block", background: "linear-gradient(135deg,#7c3aed,#4f46e5)", color: "#fff", padding: "11px 28px", borderRadius: 9, fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
+              <a href="/#pricing" className="portal-cta" style={{ display: "inline-block", background: "linear-gradient(135deg,#7c3aed,#4f46e5)", color: "#fff", padding: "11px 28px", borderRadius: 9, fontSize: 14, fontWeight: 600, textDecoration: "none", transition: "all 0.15s ease" }}>
                 View Plans →
               </a>
-              <a href="/plans?trial=true" style={{ display: "inline-block", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#9ca3af", padding: "11px 28px", borderRadius: 9, fontSize: 14, textDecoration: "none" }}>
+              <a href="/plans?trial=true" className="portal-ghost" style={{ display: "inline-block", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#9ca3af", padding: "11px 28px", borderRadius: 9, fontSize: 14, textDecoration: "none", transition: "all 0.15s ease" }}>
                 Try Free for 24hrs
               </a>
             </div>
@@ -300,7 +329,7 @@ function Dashboard({ user, subscriptions, onLogout }) {
                 <p style={{ fontSize: 15, fontWeight: 600, color: "#fff", marginBottom: 4 }}>Need to renew or upgrade?</p>
                 <p style={{ fontSize: 13, color: "#9ca3af" }}>Contact us and we'll get you sorted within minutes.</p>
               </div>
-              <a href="mailto:northhillsystems@gmail.com" style={{ background: "linear-gradient(135deg,#7c3aed,#4f46e5)", color: "#fff", padding: "10px 24px", borderRadius: 9, fontSize: 14, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>
+              <a href="mailto:northhillsystems@gmail.com" className="portal-support" style={{ background: "linear-gradient(135deg,#7c3aed,#4f46e5)", color: "#fff", padding: "10px 24px", borderRadius: 9, fontSize: 14, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap", transition: "opacity 0.15s ease" }}>
                 Contact Support →
               </a>
             </div>
@@ -342,12 +371,12 @@ function CredentialRow({ label, value, canCopy, masked, onToggleMask, showToggle
       </div>
       <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
         {showToggle && (
-          <button onClick={onToggleMask} style={{ background: "rgba(255,255,255,0.07)", border: "none", color: "#9ca3af", padding: "6px 12px", borderRadius: 7, fontSize: 12, cursor: "pointer" }}>
+          <button onClick={onToggleMask} className="portal-toggle-btn" style={{ background: "rgba(255,255,255,0.07)", border: "none", color: "#9ca3af", padding: "6px 12px", borderRadius: 7, fontSize: 12, cursor: "pointer", transition: "all 0.15s ease" }}>
             {masked ? "Show" : "Hide"}
           </button>
         )}
         {canCopy && (
-          <button onClick={handleCopy} style={{ background: copied ? "rgba(16,185,129,0.15)" : "rgba(255,255,255,0.07)", border: "none", color: copied ? "#10b981" : "#9ca3af", padding: "6px 12px", borderRadius: 7, fontSize: 12, cursor: "pointer", transition: "all 0.2s" }}>
+          <button onClick={handleCopy} className="portal-copy-btn" style={{ background: copied ? "rgba(16,185,129,0.15)" : "rgba(255,255,255,0.07)", border: "none", color: copied ? "#10b981" : "#9ca3af", padding: "6px 12px", borderRadius: 7, fontSize: 12, cursor: "pointer", transition: "all 0.2s" }}>
             {copied ? "Copied!" : "Copy"}
           </button>
         )}
