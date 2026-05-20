@@ -12,17 +12,22 @@ const S = {
   btn:    { padding: "10px 20px", borderRadius: 8, background: "linear-gradient(135deg,#7c3aed,#4f46e5)", color: "#fff", fontSize: 14, fontWeight: 600, border: "none", cursor: "pointer" },
   btnSm:  { padding: "6px 14px", borderRadius: 6, background: "linear-gradient(135deg,#7c3aed,#4f46e5)", color: "#fff", fontSize: 12, fontWeight: 600, border: "none", cursor: "pointer", whiteSpace: "nowrap" },
   error:  { background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#ef4444", marginBottom: "1rem" },
-  badge: (status) => ({
-    display: "inline-block",
-    padding: "2px 10px",
-    borderRadius: 20,
-    fontSize: 11,
-    fontWeight: 600,
-    background: status === "active" ? "rgba(16,185,129,0.15)" : status === "invoiced" ? "rgba(245,158,11,0.15)" : "rgba(99,102,241,0.15)",
-    color:      status === "active" ? "#10b981"               : status === "invoiced" ? "#f59e0b"               : "#818cf8",
-    border: `1px solid ${status === "active" ? "rgba(16,185,129,0.3)" : status === "invoiced" ? "rgba(245,158,11,0.3)" : "rgba(99,102,241,0.3)"}`,
-  }),
+  badge: (status) => {
+    const map = {
+      active:   { bg: "rgba(16,185,129,0.15)",  color: "#10b981", border: "rgba(16,185,129,0.3)"  },
+      paid:     { bg: "rgba(16,185,129,0.25)",  color: "#34d399", border: "rgba(16,185,129,0.5)"  },
+      invoiced: { bg: "rgba(245,158,11,0.15)",  color: "#f59e0b", border: "rgba(245,158,11,0.3)"  },
+      pending:  { bg: "rgba(99,102,241,0.15)",  color: "#818cf8", border: "rgba(99,102,241,0.3)"  },
+    };
+    const s = map[status] || map.pending;
+    return {
+      display: "inline-block", padding: "2px 10px", borderRadius: 20,
+      fontSize: 11, fontWeight: 600,
+      background: s.bg, color: s.color, border: `1px solid ${s.border}`,
+    };
+  },
 };
+
 
 function LoginScreen({ onGitHubLogin, error, loading }) {
   return (
@@ -152,7 +157,10 @@ function Dashboard({ user, accessToken, onSignOut }) {
   const [activating,  setActivating]  = useState(null);
   const [successIds,  setSuccessIds]  = useState(new Set());
   const [filter,      setFilter]      = useState("all");
-
+  const [wiping,      setWiping]      = useState(false);
+  const [wipeResult,  setWipeResult]  = useState(null);
+  const [checkingPayment, setCheckingPayment] = useState(null);
+  
   const fetchOrders = async () => {
     setLoading(true);
     setError("");
@@ -218,6 +226,34 @@ function Dashboard({ user, accessToken, onSignOut }) {
   //   }
   // };
 
+  const handleCheckPayment = async (order) => {
+    setCheckingPayment(order.id);
+    try {
+      const res  = await fetch("/api/admin/check-payment", {
+        method:  "POST",
+        headers: {
+          "Content-Type":  "application/json",
+          "Authorization": `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          orderId:       order.id,
+          waveInvoiceId: order.wave_invoice_id,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      if (data.isPaid) {
+        setOrders(prev => prev.map(o => o.id === order.id ? { ...o, status: "paid" } : o));
+        alert(`✅ Payment confirmed! $${data.amountPaid} received. You can now activate this account.`);
+      } else {
+        alert(`⏳ Not paid yet. Invoice status: ${data.status}${data.lastViewed ? `\nLast viewed by customer: ${new Date(data.lastViewed).toLocaleString()}` : ""}`);
+      }
+    } catch (err) {
+      alert(`Check failed: ${err.message}`);
+    } finally {
+      setCheckingPayment(null);
+    }
+  };
 
   useEffect(() => { if (accessToken) fetchOrders(); }, [accessToken]);
 
@@ -350,14 +386,32 @@ function Dashboard({ user, accessToken, onSignOut }) {
                     <td style={{ padding: "10px 12px", color: "#6b7280", whiteSpace: "nowrap" }}>
                       {new Date(order.created_at).toLocaleDateString()}
                     </td>
+
                     <td style={{ padding: "10px 12px" }}>
-                      {(order.status !== "active" && !successIds.has(order.id)) ? (
-                        <button onClick={() => setActivating(order)} style={S.btnSm}>
-                          Activate
-                        </button>
-                      ) : (
+                      {successIds.has(order.id) || order.status === "active" ? (
                         <span style={{ fontSize: 12, color: "#10b981" }}>✓ Active</span>
-                      )}
+                      ) : order.status === "paid" || parseFloat(order.price) === 0 ? (
+                        // Paid orders and free trials both go straight to Activate
+                        <button onClick={() => setActivating(order)} style={S.btnSm}>
+                          {parseFloat(order.price) === 0 ? "Activate Trial" : "Activate"}
+                        </button>
+                      ) : order.status === "invoiced" || order.status === "pending" ? (
+                        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                          <button
+                            onClick={() => handleCheckPayment(order)}
+                            disabled={checkingPayment === order.id}
+                            style={{ ...S.btnSm, background: "rgba(245,158,11,0.2)", border: "1px solid rgba(245,158,11,0.4)", color: "#f59e0b" }}
+                          >
+                            {checkingPayment === order.id ? "Checking…" : "Check Payment"}
+                          </button>
+                          {order.wave_invoice_url && (
+                            <a href={order.wave_invoice_url} target="_blank" rel="noreferrer"
+                              style={{ fontSize: 11, color: "#6b7280", textDecoration: "none", textAlign: "center" }}>
+                              View Invoice ↗
+                            </a>
+                          )}
+                        </div>
+                      ) : null}
                     </td>
                   </tr>
                 ))}

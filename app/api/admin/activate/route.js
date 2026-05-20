@@ -1,10 +1,9 @@
 // app/api/admin/activate/route.js
-// Creates subscription, updates order, emails customer credentials,
-// AND automatically creates + sends Wave invoice.
+// Activates a paid order — creates subscription and emails credentials.
+// Wave invoice is already created at order time, so nothing to do here.
 
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
-import { createWaveInvoice } from "@/lib/wave";
 
 function adminClient() {
   return createSupabaseClient(
@@ -25,10 +24,8 @@ async function verifyAdmin(req) {
 const LOGO_HTML = `
   <table cellpadding="0" cellspacing="0" style="margin-bottom:1.5rem">
     <tr>
-      <td style="width:32px;height:32px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:8px;text-align:center;vertical-align:middle;font-size:18px;color:#fff;line-height:32px">
-        &#x2B21;
-      </td>
-      <td style="padding-left:10px;font-family:Georgia,'Times New Roman',serif;font-size:17px;color:#ffffff;vertical-align:middle;font-weight:normal">
+
+      <td style="padding-left:10px;font-family:Georgia,'Times New Roman',serif;font-size:20px;color:#ffffff;vertical-align:middle;font-weight:normal">
         North Hill Systems
       </td>
     </tr>
@@ -48,7 +45,6 @@ export async function POST(req) {
 
     const supabase = adminClient();
 
-    // ── Fix: clean plan label ──────────────────────────────────
     const planLabel = planName.toLowerCase().includes(planTerm.toLowerCase())
       ? planName
       : `${planName} · ${planTerm}`;
@@ -79,40 +75,7 @@ export async function POST(req) {
 
     if (orderError) throw new Error(orderError.message);
 
-    // ── 3. Create + send Wave invoice automatically ────────────
-    // Skip for free trials ($0) — nothing to invoice
-    let waveInvoiceUrl  = null;
-    let waveInvoiceError = null;
-
-    if (parseFloat(price) > 0) {
-      try {
-        const wave = await createWaveInvoice({
-          userName,
-          userEmail,
-          planName:  planLabel,
-          planTerm,
-          price,
-          startDate,
-        });
-
-        waveInvoiceUrl = wave.invoiceUrl;
-
-        await supabase
-          .from("orders")
-          .update({ wave_invoice_url: waveInvoiceUrl })
-          .eq("id", orderId);
-
-      } catch (waveErr) {
-        // Surface the full error in the API response so the admin can see it
-        // Activation still succeeds — Wave is non-blocking
-        waveInvoiceError = waveErr.message;
-        console.error("[activate] Wave invoice creation failed:", waveErr.message);
-      }
-    } else {
-      console.log("[activate] Skipping Wave invoice — price is 0");
-    }
-
-    // ── 4. Email customer their credentials ───────────────────
+    // ── 3. Email customer their credentials ───────────────────
     const emailRes = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -178,16 +141,6 @@ export async function POST(req) {
         </tr>
       </table>
 
-      ${waveInvoiceUrl ? `
-      <table width="100%" cellpadding="0" cellspacing="0" style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:10px;padding:0;margin-bottom:1.5rem">
-        <tr>
-          <td style="padding:1rem 1.25rem;font-size:14px;color:#9ca3af;line-height:1.7">
-            <strong style="color:#fff">Invoice ready:</strong> Your invoice has been sent to this email from Wave. 
-            You can also <a href="${waveInvoiceUrl}" style="color:#10b981">view and pay your invoice here →</a>
-          </td>
-        </tr>
-      </table>` : ""}
-
       <table cellpadding="0" cellspacing="0" style="margin-bottom:1.5rem">
         <tr>
           <td style="background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:9px">
@@ -227,12 +180,7 @@ export async function POST(req) {
       console.error("Customer activation email failed:", await emailRes.text());
     }
 
-    return NextResponse.json({
-      success: true,
-      waveInvoiceUrl,
-      // Now visible in the browser network tab if Wave fails
-      waveInvoiceError: waveInvoiceError ?? undefined,
-    });
+    return NextResponse.json({ success: true });
 
   } catch (err) {
     console.error("Activation error:", err);

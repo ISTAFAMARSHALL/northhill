@@ -1,10 +1,22 @@
 // app/api/orders/request/route.js
 // Fires when a customer selects a plan and confirms.
 // 1. Saves a pending order to Supabase
-// 2. Emails you (the admin) with full order details
+// 2. Creates Wave customer + invoice and sends it to the customer
+// 3. Updates order to "invoiced" with wave_invoice_url + wave_invoice_id
+// 4. Emails admin with order details (invoice already sent to customer)
 
-import { createClient } from "@supabase/supabase-js";
-import { NextResponse } from "next/server";
+import { createClient }       from "@supabase/supabase-js";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
+import { NextResponse }        from "next/server";
+import { createWaveInvoice }   from "@/lib/wave";
+
+function adminSupabase() {
+  return createAdminClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SECRET_KEY,
+    { auth: { persistSession: false } }
+  );
+}
 
 export async function POST(req) {
   try {
@@ -13,16 +25,14 @@ export async function POST(req) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const url     = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if (!url || !anonKey) {
-      throw new Error("Missing Supabase env vars in .env.local");
-    }
-
-    const supabase = createClient(url, anonKey, {
-      global: { headers: { Authorization: `Bearer ${token}` } },
-      auth:   { persistSession: false },
-    });
+    const supabaseUser = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      {
+        global: { headers: { Authorization: `Bearer ${token}` } },
+        auth:   { persistSession: false },
+      }
+    );
 
     const body = await req.json();
     const {
@@ -30,14 +40,13 @@ export async function POST(req) {
       connections, userEmail, userName, userId,
     } = body;
 
-    // ── Fix: clean plan label so "Free Trial · trial" never appears ──
     // Only append planTerm if it isn't already part of planName
     const planLabel = planName.toLowerCase().includes(planTerm.toLowerCase())
       ? planName
       : `${planName} · ${planTerm}`;
 
     // ── 1. Save pending order to Supabase ──────────────────────
-    const { error: dbError } = await supabase
+    const { data: order, error: dbError } = await supabaseUser
       .from("orders")
       .insert({
         user_id:    userId,
@@ -49,12 +58,61 @@ export async function POST(req) {
         status:     "pending",
         user_email: userEmail,
         user_name:  userName,
-      });
+      })
+      .select("id")
+      .single();
 
     if (dbError) throw new Error(dbError.message);
 
-    // ── 2. Send notification email to admin ────────────────────
-    const emailRes = await fetch("https://api.resend.com/emails", {
+    const orderId = order.id;
+
+    // ── 2. Create Wave invoice (skip for free trials) ──────────
+    let waveInvoiceUrl = null;
+    let waveInvoiceId  = null;
+    let waveError      = null;
+
+    if (parseFloat(price) > 0) {
+      try {
+        const today = new Date().toISOString().split("T")[0];
+        const wave  = await createWaveInvoice({
+          userName,
+          userEmail,
+          planName:  planLabel,
+          planTerm,
+          price,
+          startDate: today,
+        });
+
+        waveInvoiceUrl = wave.invoiceUrl;
+        waveInvoiceId  = wave.invoiceId;
+
+        // ── 3. Update order: invoiced + wave details ───────────
+        await adminSupabase()
+          .from("orders")
+          .update({
+            status:           "invoiced",
+            wave_invoice_url: waveInvoiceUrl,
+            wave_invoice_id:  waveInvoiceId,
+          })
+          .eq("id", orderId);
+
+        console.log(`[orders/request] Wave invoice created for ${userEmail}:`, waveInvoiceUrl);
+
+      } catch (waveErr) {
+        // Wave failure is non-blocking — order is still saved
+        waveError = waveErr.message;
+        console.error("[orders/request] Wave invoice failed:", waveErr.message);
+      }
+    }
+
+    // ── 4. Notify admin ────────────────────────────────────────
+    const invoiceStatus = waveInvoiceUrl
+      ? `✅ Invoice sent to customer automatically via Wave ($${price})`
+      : waveError
+        ? `⚠️ Wave invoice failed: ${waveError} — please send manually`
+        : `ℹ️ Free trial — no invoice needed`;
+
+    await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
@@ -63,11 +121,11 @@ export async function POST(req) {
       body: JSON.stringify({
         from:    process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev",
         to:      process.env.ADMIN_NOTIFY_EMAIL || process.env.ADMIN_EMAIL,
-        subject: `🆕 New Service Request — ${userName || userEmail} · ${planLabel}`,
+        subject: `🆕 New Order — ${userName || userEmail} · ${planLabel}`,
         html: `
           <div style="font-family:sans-serif;max-width:520px;margin:0 auto;background:#0a0a0f;color:#e8e8f0;padding:2rem;border-radius:12px">
-            <h2 style="color:#a78bfa;margin-bottom:0.5rem">New Service Request</h2>
-            <p style="color:#6b7280;margin-bottom:1.5rem">A customer has selected a plan and is ready to be invoiced.</p>
+            <h2 style="color:#a78bfa;margin-bottom:0.5rem">New Service Order</h2>
+            <p style="color:#6b7280;margin-bottom:1.5rem">A customer has placed an order. Invoice has been sent automatically.</p>
 
             <table style="width:100%;border-collapse:collapse">
               <tr><td style="padding:8px 0;color:#6b7280;font-size:13px">Name</td>        <td style="padding:8px 0;color:#fff;font-weight:600">${userName || "Not provided"}</td></tr>
@@ -75,28 +133,32 @@ export async function POST(req) {
               <tr><td style="padding:8px 0;color:#6b7280;font-size:13px">Plan</td>        <td style="padding:8px 0;color:#fff;font-weight:600">${planLabel}</td></tr>
               <tr><td style="padding:8px 0;color:#6b7280;font-size:13px">Connections</td> <td style="padding:8px 0;color:#fff">${connections}</td></tr>
               <tr><td style="padding:8px 0;color:#6b7280;font-size:13px">Amount</td>      <td style="padding:8px 0;color:#10b981;font-size:18px;font-weight:700">$${price}</td></tr>
-              <tr><td style="padding:8px 0;color:#6b7280;font-size:13px">User ID</td>     <td style="padding:8px 0;color:#4b5563;font-size:12px">${userId}</td></tr>
             </table>
 
             <div style="margin-top:1.5rem;padding:1rem;background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);border-radius:8px">
-              <p style="margin:0;font-size:13px;color:#9ca3af"><strong style="color:#fff">Next steps:</strong></p>
-              <ol style="margin:0.5rem 0 0;padding-left:1.25rem;font-size:13px;color:#9ca3af;line-height:1.8">
-                <li>Send a Wave invoice to ${userEmail} for $${price}</li>
-                <li>Once paid, create their IPTV credentials in your reseller panel</li>
-                <li>Enter credentials in your <a href="${process.env.NEXT_PUBLIC_SITE_URL}/admin" style="color:#a78bfa">Admin Panel</a></li>
-                <li>Customer will see credentials in their portal automatically</li>
-              </ol>
+              <p style="margin:0 0 0.5rem;font-size:13px;color:#fff;font-weight:600">Invoice Status</p>
+              <p style="margin:0;font-size:13px;color:#9ca3af">${invoiceStatus}</p>
+              ${waveInvoiceUrl ? `<a href="${waveInvoiceUrl}" style="display:inline-block;margin-top:0.75rem;color:#a78bfa;font-size:13px">View Invoice in Wave →</a>` : ""}
+            </div>
+
+            <div style="margin-top:1rem;padding:1rem;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:8px">
+              <p style="margin:0;font-size:13px;color:#9ca3af">
+                <strong style="color:#fff">Next step:</strong> Wait for payment confirmation from Wave, 
+                then activate the account in your 
+                <a href="${process.env.NEXT_PUBLIC_SITE_URL}/admin" style="color:#a78bfa">Admin Panel</a>.
+              </p>
             </div>
           </div>
         `,
       }),
     });
 
-    if (!emailRes.ok) {
-      console.error("Email send failed:", await emailRes.text());
-    }
+    return NextResponse.json({
+      success: true,
+      waveInvoiceUrl,
+      waveError: waveError ?? undefined,
+    });
 
-    return NextResponse.json({ success: true });
   } catch (err) {
     console.error("Order request error:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });
