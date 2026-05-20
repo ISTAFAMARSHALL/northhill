@@ -44,7 +44,7 @@ export async function GET(req) {
     // Fetch active subscriptions expiring on exactly this date
     const { data: subs, error } = await supabase
       .from("subscriptions")
-      .select("id, plan_name, plan_term, connections, price, end_date, user_id")
+      .select("id, plan_name, plan_term, connections, end_date, user_id")
       .eq("status", "active")
       .eq("end_date", targetDate);
 
@@ -66,11 +66,10 @@ export async function GET(req) {
     const failed = [];
 
     for (const sub of subs) {
-      // Fetch user email + name separately from auth.users via the orders table
-      // (auth.users isn't directly queryable via the JS client without admin rights on that table)
+      // Fetch user email, name, and price from the most recent order
       const { data: order } = await supabase
         .from("orders")
-        .select("user_email, user_name")
+        .select("user_email, user_name, price")
         .eq("user_id", sub.user_id)
         .order("created_at", { ascending: false })
         .limit(1)
@@ -78,27 +77,7 @@ export async function GET(req) {
 
       const userEmail = order?.user_email;
       const userName  = order?.user_name || userEmail;
-
-      if (!userEmail) {
-        console.warn(`[cron] Skipping sub ${sub.id} — no email found`);
-        failed.push({ subId: sub.id, reason: "no email" });
-        continue;
-      }
-
-      // Use the subscription's stored price if available,
-      // otherwise fall back to the most recent order
-      let price = sub.price;
-      if (!price) {
-        const { data: priceOrder } = await supabase
-          .from("orders")
-          .select("price")
-          .eq("user_id", sub.user_id)
-          .eq("status", "active")
-          .order("created_at", { ascending: false })
-          .limit(1)
-          .single();
-        price = priceOrder?.price ?? order?.price;
-      }
+      const price     = order?.price;
 
       if (!price || parseFloat(price) <= 0) {
         console.warn(`[cron] Skipping sub ${sub.id} — price is ${price}`);
