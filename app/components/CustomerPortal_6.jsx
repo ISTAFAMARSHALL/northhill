@@ -294,7 +294,7 @@ function Dashboard({ user, subscriptions, onLogout }) {
           {activeCount > 0 && (
             <button
               onClick={() => setShowAddModal(true)}
-              className="portal-add-btn" style={{ background: "rgba(124,58,237,0.15)", border: "1px solid rgba(124,58,237,0.4)", color: "#a78bfa", padding: "10px 20px", borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap", transition: "all 0.15s ease" }}
+              className="cta-btn" style={{ background: "rgba(124,58,237,0.15)", border: "1px solid rgba(124,58,237,0.4)", color: "#a78bfa", padding: "10px 20px", borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap", transition: "all 0.15s ease" }}
             >
               + Get Additional Subscription
             </button>
@@ -312,7 +312,7 @@ function Dashboard({ user, subscriptions, onLogout }) {
               <a href="/#pricing" className="portal-cta" style={{ display: "inline-block", background: "linear-gradient(135deg,#7c3aed,#4f46e5)", color: "#fff", padding: "11px 28px", borderRadius: 9, fontSize: 14, fontWeight: 600, textDecoration: "none", transition: "all 0.15s ease" }}>
                 View Plans →
               </a>
-              <a href="/plans?trial=true" className="portal-ghost" style={{ display: "inline-block", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#9ca3af", padding: "11px 28px", borderRadius: 9, fontSize: 14, textDecoration: "none", transition: "all 0.15s ease" }}>
+              <a href="/plans?trial=true" className="portal-cta" style={{ display: "inline-block", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#9ca3af", padding: "11px 28px", borderRadius: 9, fontSize: 14, textDecoration: "none", transition: "all 0.15s ease" }}>
                 Try Free for 24hrs
               </a>
             </div>

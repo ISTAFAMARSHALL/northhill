@@ -109,7 +109,7 @@ export default function NorthHillLanding() {
           <button className="cta-btn" onClick={openTrial} style={{ display: "inline-flex", alignItems: "center", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", padding: "14px 32px", borderRadius: 10, fontSize: 16, fontWeight: 600, boxShadow: "0 0 30px rgba(124,58,237,0.35)" }}>
             {planButtonsDisabled ? "Go to My Portal →" : "Start Free Trial →"}
           </button>
-          <a href="#pricing" className="view-plans-link" style={{ display: "inline-flex", alignItems: "center", padding: "14px 32px", borderRadius: 10, fontSize: 16, fontWeight: 500, border: "1px solid rgba(255,255,255,0.12)", color: "#e8e8f0", textDecoration: "none", background: "rgba(255,255,255,0.04)", transition: "all 0.15s ease" }}>
+          <a href="#pricing" className="cta-btn" style={{ display: "inline-flex", alignItems: "center", padding: "14px 32px", borderRadius: 10, fontSize: 16, fontWeight: 500, border: "1px solid rgba(255,255,255,0.12)", color: "#e8e8f0", textDecoration: "none", background: "rgba(255,255,255,0.04)", transition: "all 0.15s ease" }}>
             View Plans
           </a>
         </div>
@@ -121,9 +121,9 @@ export default function NorthHillLanding() {
         <h2 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "clamp(1.6rem, 3vw, 2.2rem)", textAlign: "center", color: "#fff", marginBottom: "3rem" }}>
           Everything included, every plan
         </h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.25rem" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "1.25rem" }}>
           {FEATURES.map((f) => (
-            <div key={f.title} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 14, padding: "1.5rem" }}>
+            <div key={f.title} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 14, padding: "1.5rem", flex: "1 1 280px", maxWidth: 340 }}>
               <div style={{ fontSize: 28, marginBottom: "0.75rem" }}>{f.icon}</div>
               <h3 style={{ fontSize: 16, fontWeight: 600, color: "#fff", marginBottom: 6 }}>{f.title}</h3>
               <p style={{ fontSize: 14, color: "#6b7280", lineHeight: 1.6 }}>{f.desc}</p>
@@ -167,7 +167,7 @@ export default function NorthHillLanding() {
         </div>
 
         {/* Plan cards — only these buttons are disabled */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "1rem" }}>
           {visiblePlans.map((plan) => (
             <PlanCard
               key={plan.id}
