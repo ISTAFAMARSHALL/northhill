@@ -73,6 +73,13 @@ export default function NorthHillLanding() {
         .disabled-card:hover { cursor: pointer; opacity: 0.7 !important; }
         .sub-banner-btn:hover { opacity: 0.88; }
         .view-plans-link:hover { opacity: 0.85; }
+        @media (max-width: 640px) {
+        .nav-links-desktop { display: none !important; }
+        .nav-logo { height: 48px !important; }
+        }
+        @media (min-width: 641px) {
+          .nav-logo { height: 250px !important; }
+        }
       `}</style>
 
       {/* NAV — always fully active */}
