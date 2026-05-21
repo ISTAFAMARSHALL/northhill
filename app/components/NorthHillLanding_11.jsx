@@ -75,7 +75,7 @@ export default function NorthHillLanding() {
         .view-plans-link:hover { opacity: 0.85; }
         @media (max-width: 640px) {
           .nav-links-desktop { display: none !important; }
-          .nav-logo-wrap img { height: 44px !important; width: auto !important; }
+          .nav-logo-wrap img { height: 150px !important; width: auto !important; }
           .nav-logo-wrap span { height: 44px !important; width: auto !important; }
         }
       `}</style>
