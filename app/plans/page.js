@@ -80,12 +80,18 @@ function SuccessScreen({ plan, email }) {
           ))}
         </div>
         <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center", flexWrap: "wrap" }}>
-          <a href="/portal" style={{ padding: "11px 28px", borderRadius: 9, background: "linear-gradient(135deg,#7c3aed,#4f46e5)", color: "#fff", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
+          {/* <a href="/portal" style={{ padding: "11px 28px", borderRadius: 9, background: "linear-gradient(135deg,#7c3aed,#4f46e5)", color: "#fff", fontSize: 14, fontWeight: 600, textDecoration: "none" }}>
             Go to My Portal →
           </a>
           <a href="/" style={{ padding: "11px 28px", borderRadius: 9, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>
             Back to Home
-          </a>
+          </a> */}
+              <a href="/portal" className="portal-cta" style={{ display: "inline-block", background: "linear-gradient(135deg,#7c3aed,#4f46e5)", color: "#fff", padding: "11px 28px", borderRadius: 9, fontSize: 14, fontWeight: 600, textDecoration: "none", transition: "all 0.15s ease" }}>
+                Go to My Portal →
+              </a>
+              <a href="/" className="portal-cta" style={{ display: "inline-block", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#9ca3af", padding: "11px 28px", borderRadius: 9, fontSize: 14, textDecoration: "none", transition: "all 0.15s ease" }}>
+                Back to Home
+              </a>
         </div>
       </div>
     </div>

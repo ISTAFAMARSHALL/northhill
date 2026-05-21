@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "lib/wave.js", "app/api/admin/activate/route.js"  ],
+, "lib/wave.js", "app/api/admin/activate/route.js", "app/plans/page.js"  ],
   "exclude": ["node_modules"]
 }
