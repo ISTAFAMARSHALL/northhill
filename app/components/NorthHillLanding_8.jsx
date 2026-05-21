@@ -81,10 +81,10 @@ export default function NorthHillLanding() {
           <Image src="/logo.png" width={1024} height={1024} alt="North Hill Systems" loading="eager" priority style={{ height: 250, width: "auto" }} />
         </a>
         <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
-          <a href="#features" className="nav-link" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none", transition: "color 0.15s ease" }}>Features</a>
-          <a href="#pricing" className="nav-link" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none", transition: "color 0.15s ease" }}>Pricing</a>
-          <a href="#faq" className="nav-link" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none", transition: "color 0.15s ease" }}>FAQ</a>
-          <a href="/portal" className="nav-link" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none", transition: "color 0.15s ease" }}>My Account</a>
+          <a href="#features" className="nav-link" style={{ color: "#9ca3af", fontSize: 13, textDecoration: "none", transition: "color 0.15s ease" }}>Features</a>
+          <a href="#pricing" className="nav-link" style={{ color: "#9ca3af", fontSize: 13, textDecoration: "none", transition: "color 0.15s ease" }}>Pricing</a>
+          <a href="#faq" className="nav-link" style={{ color: "#9ca3af", fontSize: 13, textDecoration: "none", transition: "color 0.15s ease" }}>FAQ</a>
+          <a href="/portal" className="nav-link" style={{ color: "#9ca3af", fontSize: 13, textDecoration: "none", transition: "color 0.15s ease" }}>Account</a>
           <button className="cta-btn" onClick={openTrial} style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", padding: "8px 18px", borderRadius: 8, fontSize: 14, fontWeight: 500 }}>
             {planButtonsDisabled ? "My Portal →" : "Free Trial"}
           </button>
