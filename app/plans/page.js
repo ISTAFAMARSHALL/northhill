@@ -203,11 +203,17 @@ export default function PlanSelectionPage() {
 
   return (
     <div style={S.page}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap');*{box-sizing:border-box;margin:0;padding:0}.pc:hover{transform:translateY(-3px);border-color:rgba(124,58,237,0.4)!important}`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap');*{box-sizing:border-box;margin:0;padding:0}.pc:hover{transform:translateY(-3px);border-color:rgba(124,58,237,0.4)!important}
+         @media (max-width: 640px) {
+          .nav-links-desktop { display: none !important; }
+          .nav-logo-wrap img { height: 150px !important; width: auto !important; }
+          .nav-logo-wrap span { height: 44px !important; width: auto !important; }
+        }
+ `}</style>
 
       {/* NAV — always fully active */}
       <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", height: 80, padding: "0 1rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(10,10,15,0.95)", position: "sticky", top: 0, zIndex: 100, backdropFilter: "blur(10px)" }}>
-        <div style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>
+        <div className="nav-logo-wrap" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>
           <Image src="/logo.png" width={1024} height={1024} alt="North Hill Systems" loading="eager" priority style={{ height: 250, width: "auto" }} />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
