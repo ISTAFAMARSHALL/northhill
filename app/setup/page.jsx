@@ -361,7 +361,7 @@ export default function SetupPage() {
         </div>
 
         <div style={{ textAlign:"center" }}>
-          <p style={{ fontSize:14, color:"#6b7280", marginBottom:"1rem" }}>Still having trouble? We're here to help.</p>
+          <p style={{ fontSize:14, color:"#6b7280", marginBottom:"1rem" }}>{"Still having trouble? We're here to help."}</p>
           <div style={{ display:"flex", gap:"0.75rem", justifyContent:"center", flexWrap:"wrap" }}>
             <a href="mailto:support@northhillsystems.com" className="support-btn" style={{ background:"linear-gradient(135deg,#7c3aed,#4f46e5)", color:"#fff", padding:"10px 24px", borderRadius:9, fontSize:14, fontWeight:600, textDecoration:"none", transition:"opacity 0.15s" }}>Contact Support →</a>
             <Link href="/portal" className="portal-btn" style={{ background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)", color:"#9ca3af", padding:"10px 24px", borderRadius:9, fontSize:14, textDecoration:"none", transition:"background 0.15s" }}>My Account Portal</Link>
