@@ -147,15 +147,17 @@ function DownloadBar({ deviceId }) {
                 target="_blank"
                 rel="noreferrer"
                 >
-
                 <Image 
                   src={link.image}
                   alt="Google Play"
-                  width={180}
-                  height={60}
+                  width={200}
+                  height={80}
                   priority
+                  style={{
+                    width: "180px",
+                    height: "auto",
+                  }}
                 />
-
               </a>) 
               : 
             null}
