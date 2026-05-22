@@ -153,6 +153,7 @@ function DownloadBar({ deviceId }) {
                   alt="Google Play"
                   width={180}
                   height={60}
+                  priority
                 />
 
               </a>) 
