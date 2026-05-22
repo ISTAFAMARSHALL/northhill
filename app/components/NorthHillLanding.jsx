@@ -90,6 +90,7 @@ export default function NorthHillLanding() {
             <a href="#features" className="nav-link" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none", transition: "color 0.15s ease" }}>Features</a>
             <a href="#pricing" className="nav-link" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none", transition: "color 0.15s ease" }}>Pricing</a>
             <a href="#faq" className="nav-link" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none", transition: "color 0.15s ease" }}>FAQ</a>
+            <a href="/setup" className="nav-link" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none", transition: "color 0.15s ease" }}>Setup</a>
             <a href="/portal" className="nav-link" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none", transition: "color 0.15s ease" }}>Account</a>
           </div>
           <button className="cta-btn" onClick={openTrial} style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)", color: "#fff", padding: "8px 18px", borderRadius: 8, fontSize: 14, fontWeight: 500 }}>
@@ -257,11 +258,11 @@ export default function NorthHillLanding() {
       {/* FOOTER */}
       <footer style={{ borderTop: "1px solid rgba(255,255,255,0.06)", padding: "2rem", textAlign: "center" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: "0.75rem" }}>
-          <a href="/terms" className="footer-link" style={{ fontSize: 13, color: "#6b7280", textDecoration: "none", transition: "color 0.15s ease" }}>Terms of Service</a>
-          <a href="./" className="nav-logo-wrap" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>
+          <a href="/terms" className="footer-link" style={{ fontSize: 16, color: "#6b7280", textDecoration: "none", transition: "color 0.15s ease" }}>Terms of Service</a>
+          <a href="./" className="nav-logo-wrap" style={{ color: "#9ca3af", textDecoration: "none" }}>
             <Image src="/logo.png" width={1024} height={1024} alt="North Hill Systems" loading="eager" priority style={{ height: 200, width: "auto" }} />
           </a>
-          <a href="/portal" className="footer-link" style={{ fontSize: 13, color: "#6b7280", textDecoration: "none", transition: "color 0.15s ease" }}>My Account</a>
+          <a href="/setup" className="footer-link" style={{ fontSize: 16, color: "#6b7280", textDecoration: "none", transition: "color 0.15s ease" }}>Setup</a>
         </div>
         <p style={{ fontSize: 13, color: "#4b5563" }}>© {new Date().getFullYear()} North Hill Systems LLC. All rights reserved.</p>
       </footer>

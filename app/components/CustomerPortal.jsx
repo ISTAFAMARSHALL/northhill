@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase";
+import Link from "next/link";
 
 // ─────────────────────────────────────────
 // Helpers
@@ -114,8 +115,8 @@ function LoginScreen({ onLogin }) {
         .modal-confirm:hover { opacity: 0.88; }
       `}</style>
       <div style={{ width: "100%", maxWidth: 420 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "2.5rem", justifyContent: "center" }}>
-          <img src="/logo.png" alt="North Hill Systems" style={{ height: 160, width: "auto" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: "-4rem", justifyContent: "center" }}>
+          <Image src="/logo.png" width={1024} height={1024} alt="North Hill Systems" loading="eager" priority style={{ height: 300, width: "auto" }} />
         </div>
         <div style={{ ...S.card, padding: "2.25rem" }}>
           <h1 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 24, color: "#fff", marginBottom: 6 }}>Welcome back</h1>
@@ -131,12 +132,12 @@ function LoginScreen({ onLogin }) {
             </button>
           </form>
           <div style={{ textAlign: "center", marginTop: "1.25rem" }}>
-            <a href="/" className="login-back" style={{ fontSize: 13, color: "#6b7280", textDecoration: "none", transition: "color 0.15s ease" }}>← Back to home</a>
+            <Link href="/" className="login-back" style={{ fontSize: 13, color: "#6b7280", textDecoration: "none", transition: "color 0.15s ease" }}>← Back to home</Link>
           </div>
         </div>
         <p style={{ textAlign: "center", fontSize: 13, color: "#4b5563", marginTop: "1.5rem" }}>
-          Don't have an account?{" "}
-          <a href="/#pricing" className="login-plans" style={{ color: "#a78bfa", textDecoration: "none", transition: "color 0.15s ease" }}>View plans →</a>
+          {"Don't have an account?"}
+          <Link href="/#pricing" className="login-plans" style={{ color: "#a78bfa", textDecoration: "none", transition: "color 0.15s ease" }}>View plans →</Link>
         </p>
       </div>
     </div>
@@ -228,6 +229,15 @@ function SubscriptionCard({ subscription, index }) {
             showToggle
           />
         </div>
+        <div style={{ marginTop: "1.25rem", paddingTop: "1.25rem", borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "0.75rem" }}>
+          <div>
+            <p style={{ fontSize: 13, fontWeight: 600, color: "#e8e8f0", marginBottom: 2 }}>Need help setting up?</p>
+            <p style={{ fontSize: 12, color: "#6b7280" }}>Step-by-step guide for TiviMate, TiviMax, and IPTV Smarters.</p>
+          </div>
+          <a href="/setup" style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(124,58,237,0.12)", border: "1px solid rgba(124,58,237,0.3)", color: "#a78bfa", padding: "7px 16px", borderRadius: 8, fontSize: 13, fontWeight: 600, textDecoration: "none", transition: "all 0.15s ease", whiteSpace: "nowrap" }}>
+            📺 Setup Guide →
+          </a>
+        </div>
       </div>
     </div>
   );
@@ -277,6 +287,7 @@ function Dashboard({ user, subscriptions, onLogout }) {
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
           <span style={{ fontSize: 13, color: "#6b7280" }}>{user?.email}</span>
+          <a href="/setup" className="nav-link" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none", transition: "color 0.15s ease" }}>Setup</a>
           <button onClick={onLogout} className="portal-signout" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#9ca3af", padding: "7px 16px", borderRadius: 8, fontSize: 13, cursor: "pointer", transition: "all 0.15s ease" }}>
             Sign out
           </button>
@@ -314,9 +325,9 @@ function Dashboard({ user, subscriptions, onLogout }) {
               {"Pick a plan and get your credentials in your inbox — usually within 15 minutes."}
             </p>
             <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center", flexWrap: "wrap" }}>
-              <a href="/#pricing" className="portal-cta" style={{ display: "inline-block", background: "linear-gradient(135deg,#7c3aed,#4f46e5)", color: "#fff", padding: "11px 28px", borderRadius: 9, fontSize: 14, fontWeight: 600, textDecoration: "none", transition: "all 0.15s ease" }}>
+              <Link href="/#pricing" className="portal-cta" style={{ display: "inline-block", background: "linear-gradient(135deg,#7c3aed,#4f46e5)", color: "#fff", padding: "11px 28px", borderRadius: 9, fontSize: 14, fontWeight: 600, textDecoration: "none", transition: "all 0.15s ease" }}>
                 View Plans →
-              </a>
+              </Link>
               <a href="/plans?trial=true" className="portal-cta" style={{ display: "inline-block", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#9ca3af", padding: "11px 28px", borderRadius: 9, fontSize: 14, textDecoration: "none", transition: "all 0.15s ease" }}>
                 Try Free for 24hrs
               </a>
