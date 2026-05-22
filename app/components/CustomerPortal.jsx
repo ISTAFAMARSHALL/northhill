@@ -262,6 +262,7 @@ function Dashboard({ user, subscriptions, onLogout }) {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap');
         *{box-sizing:border-box}
+        .cta-btn  { transition: all 0.15s ease; cursor: pointer; border: none; }
         .portal-nav-link:hover { color: #e8e8f0 !important; }
         .portal-cta:hover { opacity: 0.88; transform: scale(1.01); }
         .portal-ghost:hover { background: rgba(255,255,255,0.1) !important; color: #e8e8f0 !important; }
@@ -272,6 +273,7 @@ function Dashboard({ user, subscriptions, onLogout }) {
         .portal-signout:hover { background: rgba(255,255,255,0.1) !important; color: #e8e8f0 !important; }
         .portal-renew-link:hover { color: #f87171 !important; }
         .modal-cancel:hover { background: rgba(255,255,255,0.1) !important; }
+        .dl-btn:hover{opacity:0.88} .support-btn:hover{opacity:0.88}
         .modal-confirm:hover { opacity: 0.88; }
         @media (max-width: 640px) {
           .nav-links-desktop { display: none !important; }
@@ -288,7 +290,7 @@ function Dashboard({ user, subscriptions, onLogout }) {
         <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
           <span style={{ fontSize: 13, color: "#6b7280" }}>{user?.email}</span>
           <a href="/setup" className="nav-link" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none", transition: "color 0.15s ease" }}>Setup</a>
-          <button onClick={onLogout} className="portal-signout" style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#9ca3af", padding: "7px 16px", borderRadius: 8, fontSize: 13, cursor: "pointer", transition: "all 0.15s ease" }}>
+          <button className="dl-btn" onClick={onLogout} style={{ background:"linear-gradient(135deg,#7c3aed,#4f46e5)", color:"#fff", padding:"7px 16px", borderRadius:8, fontSize:13, fontWeight:600, textDecoration:"none", transition:"opacity 0.15s" }}>
             Sign out
           </button>
         </div>
