@@ -5,10 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 const DEVICES = [
-  { id: "firestick", label: "🔥 Firestick / Android TV", app: "TiviMate" },
-  { id: "android",   label: "🤖 Android Phone / Tablet",  app: "TiviMate" },
-  { id: "iphone",    label: "📱 iPhone / iPad",            app: "IPTV Smarters Pro" },
-  { id: "appletv",   label: "🍎 Apple TV",                 app: "TiviMax" },
+  { id: "firestick", label: "🔥 Fire TV Stick / Cube", app: "TiviMate" },
+  { id: "android",    label: "🤖 Android TV / Phone / Tablet", app: "IPTV Smarters Pro" },
+  { id: "appletv",   label: "🍎 Apple TV / iPhone / iPad", app: "TiviMax" },
 ];
 
 const FIRESTICK_STEPS = [
@@ -46,6 +45,56 @@ const APPLETV_STEPS = [
 
 const STEPS_MAP = { firestick:FIRESTICK_STEPS, android:ANDROID_STEPS, iphone:IPHONE_STEPS, appletv:APPLETV_STEPS };
 
+const DOWNLOAD_LINKS = {
+  firestick: [
+    {
+      label: "Watch Install Tutorial",
+      sublabel: "YouTube — full 2026 walkthrough",
+      icon: "▶️",
+      href: "https://www.youtube.com/watch?v=wpcIXUqku40",
+      primary: true,
+    },
+    {
+      label: "Sideload via Downloader",
+      sublabel: "Firestick — use code 272483",
+      icon: "📥",
+      href: "https://www.amazon.com/AFTVnews-com-Downloader/dp/B01N0BP507",
+      primary: false,
+      code: "272483",
+    },
+  ],
+  android: [
+    {
+      label: "Google Play",
+      sublabel: "Android phones & tablets",
+      icon: "🟢",
+      image: "/google-play-badge.png",
+      href: "https://play.google.com/store/apps/details?id=com.smart.iptvplayer_smarterspro",
+      primary: true,
+    },
+  ],
+  iphone: [
+    {
+      label: "App Store",
+      sublabel: "iPhone & iPad",
+      icon: "🍎",
+      image: "icon_appstore.png",
+      href: "https://apps.apple.com/us/app/iptv-smarters-pro-live-vod/id6478442199",
+      primary: true,
+    },
+  ],
+  appletv: [
+    {
+      label: "App Store",
+      sublabel: "Apple TV",
+      icon: "🍎",
+      image: "/Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg",
+      href: "https://apps.apple.com/us/app/tivimax-iptv-player-premium/id1632953327",
+      primary: true,
+    },
+  ],
+};
+
 const TIVIMATE_FEATURES = [
   { name:"TV Guide (EPG)",       desc:"Press Menu on your remote from any channel to open the full program guide. Browse upcoming shows and schedule viewing." },
   { name:"Favorites",            desc:"Long-press Select on any channel and choose Add to Favorites. Scroll through only your favorite channels for a personal lineup." },
@@ -79,6 +128,73 @@ const TROUBLESHOOTING = [
   { issue:"Audio out of sync with video", fix:"In TiviMate press Select while watching and adjust the Audio Offset until they match." },
   { issue:"App crashes on load",          fix:"Delete and reinstall the app. Make sure device firmware and app are fully updated." },
 ];
+
+function DownloadBar({ deviceId }) {
+  const links = DOWNLOAD_LINKS[deviceId] || [];
+  if (!links.length) return null;
+  return (
+    <div style={{ marginBottom: "1.75rem" }}>
+      <p style={{ fontSize: 12, color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: "0.75rem", fontWeight: 600 }}>
+        Download the app
+      </p>
+      <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+        {links.map((link, i) => (
+          <div key={i} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+
+            {link.image ? (
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noreferrer"
+                >
+
+                <Image 
+                  src={link.image}
+                  alt="Google Play"
+                  width={180}
+                  height={60}
+                />
+
+              </a>) 
+              : 
+            null}
+
+            {link.image ? null 
+            : 
+            (
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 10,
+                  background: link.primary ? "linear-gradient(135deg,#7c3aed,#4f46e5)" : "rgba(255,255,255,0.06)",
+                  border: link.primary ? "none" : "1px solid rgba(255,255,255,0.1)",
+                  color: "#fff", padding: "10px 18px", borderRadius: 9,
+                  textDecoration: "none", transition: "opacity 0.15s",
+                  fontSize: 13, fontWeight: 600,
+                }}
+                onMouseEnter={e => e.currentTarget.style.opacity = "0.85"}
+                onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+              >
+                <span style={{ fontSize: 16 }}>{link.icon}</span>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 600 }}>{link.label}</div>
+                  <div style={{ fontSize: 11, color: link.primary ? "rgba(255,255,255,0.75)" : "#6b7280", fontWeight: 400 }}>{link.sublabel}</div>
+                </div>
+              </a>
+            )}
+            {link.code && (
+              <div style={{ background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)", borderRadius: 8, padding: "7px 12px", fontSize: 12, color: "#fbbf24" }}>
+                ⌨️ Downloader code: <strong style={{ letterSpacing: "0.1em" }}>{link.code}</strong>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function StepCard({ step }) {
   return (
@@ -140,7 +256,7 @@ export default function SetupPage() {
           <Image src="/logo.png" width={1024} height={1024} alt="North Hill Systems" priority style={{ height:250, width:"auto" }} />
         </Link>
         <div style={{ display:"flex", gap:"1.25rem", alignItems:"center" }}>
-          <Link href="/" className="nav-link" style={{ fontSize:13, color:"#6b7280", textDecoration:"none", transition:"color 0.15s" }}>← Home</Link>
+          <Link href="/" className="nav-link" style={{ fontSize:14, color:"#6b7280", textDecoration:"none", transition:"color 0.15s" }}>← Home</Link>
           <Link href="/portal" className="nav-link" style={{ fontSize:13, color:"#6b7280", textDecoration:"none", transition:"color 0.15s" }}>My Account</Link>
           <a href="/northhill-setup-guide.pdf" download className="dl-btn" style={{ background:"linear-gradient(135deg,#7c3aed,#4f46e5)", color:"#fff", padding:"7px 16px", borderRadius:8, fontSize:13, fontWeight:600, textDecoration:"none", transition:"opacity 0.15s" }}>↓ PDF Guide</a>
         </div>
@@ -187,6 +303,7 @@ export default function SetupPage() {
           </p>
         </div>
 
+        <DownloadBar deviceId={activeDevice} />
         <h2 style={{ fontFamily:"'DM Serif Display',serif", fontSize:"1.4rem", color:"#fff", marginBottom:"1rem" }}>Setup Steps</h2>
         <div style={{ display:"flex", flexDirection:"column", gap:"0.75rem", marginBottom:"2.5rem" }}>
           {steps.map(step => <StepCard key={step.num} step={step} />)}

@@ -202,7 +202,7 @@ export default function NorthHillLanding() {
             { step: "02", icon: "💳", title: "Pay your invoice", desc: "A secure Wave invoice lands in your email. Pay with any major card in minutes — no account needed." },
             { step: "03", icon: "📺", title: "Start streaming", desc: "Your credentials arrive by email, usually within 15 minutes. Load them into TiviMate, IPTV Smarters, or any IPTV app and go." },
           ].map(({ step, icon, title, desc }) => (
-            <div key={step} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 16, padding: "1.75rem", position: "relative" }}>
+            <div key={step} style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 16, padding: "1.75rem", position: "relative", justifyItems: "center"}}>
               <div style={{ fontSize: 11, fontWeight: 700, color: "#7c3aed", letterSpacing: "0.12em", marginBottom: "0.75rem" }}>STEP {step}</div>
               <div style={{ fontSize: 28, marginBottom: "0.75rem" }}>{icon}</div>
               <h3 style={{ fontSize: 16, fontWeight: 600, color: "#fff", marginBottom: 8 }}>{title}</h3>
