@@ -412,6 +412,16 @@ export default function CustomerPortal() {
   const [loading,       setLoading]       = useState(true);
   const supabase = createClient();
 
+  const fetchSubscriptions = async (userId) => {
+    const { data } = await supabase
+      .from("subscriptions")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false });
+    setSubscriptions(data || []);
+    setLoading(false);
+  };
+
   useEffect(() => {
     const { data: { subscription: authSub } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
@@ -424,17 +434,8 @@ export default function CustomerPortal() {
       }
     });
     return () => authSub.unsubscribe();
-  }, []);
+  },);
 
-  const fetchSubscriptions = async (userId) => {
-    const { data } = await supabase
-      .from("subscriptions")
-      .select("*")
-      .eq("user_id", userId)
-      .order("created_at", { ascending: false });
-    setSubscriptions(data || []);
-    setLoading(false);
-  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();

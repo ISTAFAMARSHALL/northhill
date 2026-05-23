@@ -369,12 +369,7 @@ export default function SetupPage() {
             <Link href="/portal" className="portal-btn" style={{ background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)", color:"#9ca3af", padding:"10px 24px", borderRadius:9, fontSize:14, textDecoration:"none", transition:"background 0.15s" }}>My Account Portal</Link>
           </div>
         </div>
-
       </div>
-
-      <footer style={{ borderTop:"1px solid rgba(255,255,255,0.06)", padding:"1.5rem", textAlign:"center" }}>
-        <p style={{ fontSize:12, color:"#4b5563" }}>© {new Date().getFullYear()} North Hill Systems LLC. All rights reserved.</p>
-      </footer>
     </div>
   );
 }

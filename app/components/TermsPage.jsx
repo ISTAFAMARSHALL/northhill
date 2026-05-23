@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 
 const LAST_UPDATED = "May 19, 2026";
 const COMPANY = "North Hill Systems LLC";
@@ -32,32 +33,25 @@ export default function TermsPage() {
   return (
     <div style={S.page}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap');*{box-sizing:border-box;margin:0;padding:0}
+          .dl-btn:hover{opacity:0.88} .support-btn:hover{opacity:0.88}
           @media (max-width: 640px) {
           .nav-links-desktop { display: none !important; }
           .nav-logo-wrap img { height: 150px !important; width: auto !important; }
           .nav-logo-wrap span { height: 44px !important; width: auto !important; }
         }`}</style>
 
-      {/* Nav */}
-      {/* <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1.1rem 2rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(10,10,15,0.97)", position: "sticky", top: 0, zIndex: 100 }}>
-        <a href="/" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <Image src="/logo.png" width={1024} height={1024} alt="North Hill Systems" loading="eager" priority style={{ height: 250, width: "auto" }} />
-        </div>
-        </a>
-        <a href="/" style={{ fontSize: 13, color: "#6b7280", textDecoration: "none" }}>← Back to Home</a>
-      </nav> */}
       {/* NAV */}
       <nav style={{ display: "flex", justifyContent: "space-between", alignItems: "center", height: 80, padding: "0 1rem", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(10,10,15,0.95)", position: "sticky", top: 0, zIndex: 100, backdropFilter: "blur(10px)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <a href="./" className="nav-logo-wrap" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>
+        <a href="./" className="nav-logo-wrap" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none", display: "flex", alignItems: "center" }}>
           <Image src="/logo.png" width={1024} height={1024} alt="North Hill Systems" loading="eager" priority style={{ height: 250, width: "auto" }} />
-          </a>
-        </div>
+        </a>
         <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
-          <a href="./" style={{ color: "#9ca3af", fontSize: 14, textDecoration: "none" }}>← Back to Home</a>
+          <Link href="/" className="dl-btn" style={{ background:"linear-gradient(135deg,#7c3aed,#4f46e5)", color:"#fff", padding:"7px 16px", borderRadius:8, fontSize:13, fontWeight:600, textDecoration:"none", transition:"opacity 0.15s" }}>
+          ← Back to Home
+          </Link>
         </div>
       </nav>
+
 
       <div style={S.wrap}>
         {/* Header */}
@@ -320,11 +314,6 @@ export default function TermsPage() {
           By using {COMPANY}'s services or completing payment, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.
         </p>
       </div>
-
-      {/* Footer */}
-      <footer style={{ borderTop: "1px solid rgba(255,255,255,0.06)", padding: "1.5rem 2rem", textAlign: "center" }}>
-        <p style={{ fontSize: 13, color: "#374151" }}>© {new Date().getFullYear()} {COMPANY}. All rights reserved.</p>
-      </footer>
     </div>
   );
 }
