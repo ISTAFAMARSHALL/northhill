@@ -33,9 +33,10 @@ async function getWaveInvoiceStatus(invoiceId) {
         query($businessId: ID!, $invoiceId: ID!) {
           business(id: $businessId) {
             invoice(id: $invoiceId) {
-              id status
+              id status lastViewedAt
               amountDue  { value }
               amountPaid { value }
+              total      { value }
             }
           }
         }
