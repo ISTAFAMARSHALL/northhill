@@ -22,6 +22,8 @@ function adminSupabase() {
   );
 }
 
+export const maxDuration = 60; // seconds
+
 export async function POST(req) {
   try {
     const token = req.headers.get("authorization")?.replace("Bearer ", "");

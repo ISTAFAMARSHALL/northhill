@@ -13,6 +13,8 @@ function adminClient() {
   );
 }
 
+export const maxDuration = 60; // seconds
+
 async function verifyAdmin(req) {
   const token = req.headers.get("authorization")?.replace("Bearer ", "");
   if (!token) return null;
