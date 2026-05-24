@@ -5,7 +5,7 @@ import Link from "next/link";
 const LAST_UPDATED = "May 19, 2026";
 const COMPANY = "North Hill Systems LLC";
 const SITE = "northhillsystems.com";
-const EMAIL = "support@northhillsystems.com";
+const EMAIL = "northhillsystems@gmail.com";
 
 const S = {
   page: { fontFamily: "'DM Sans','Segoe UI',sans-serif", background: "#0a0a0f", minHeight: "100vh", color: "#e8e8f0" },
