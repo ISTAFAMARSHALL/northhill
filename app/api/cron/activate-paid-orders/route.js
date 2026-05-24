@@ -35,8 +35,10 @@ async function getWaveInvoiceStatus(invoiceId) {
         query($businessId: ID!, $invoiceId: ID!) {
           business(id: $businessId) {
             invoice(id: $invoiceId) {
-              id status
-              amountDue { value }
+              id status lastViewedAt
+              amountDue  { value }
+              amountPaid { value }
+              total      { value }
             }
           }
         }
@@ -45,7 +47,10 @@ async function getWaveInvoiceStatus(invoiceId) {
     }),
   });
   const json = await res.json();
-  if (json.errors) throw new Error(json.errors.map(e => e.message).join(", "));
+  if (json.errors) {
+    const msg = json.errors.map(e => e.message).join(", ");
+    throw new Error(`Wave API error for invoice ${invoiceId}: ${msg}`);
+  }
   return json.data.business.invoice;
 }
 
@@ -82,8 +87,17 @@ export async function GET(req) {
 
   for (const order of orders) {
     try {
-      const invoice = await getWaveInvoiceStatus(order.wave_invoice_id);
-      const isPaid  = invoice?.status === "PAID" || parseFloat(invoice?.amountDue?.value) === 0;
+      let invoice;
+      try {
+        invoice = await getWaveInvoiceStatus(order.wave_invoice_id);
+      } catch (waveErr) {
+        console.error("[cron/activate-paid] Wave lookup failed for order", order.id, "invoice", order.wave_invoice_id, ":", waveErr.message);
+        failed.push({ orderId: order.id, stage: "wave", error: waveErr.message });
+        continue;
+      }
+
+      const isPaid = invoice?.status === "PAID" || parseFloat(invoice?.amountDue?.value) === 0;
+      console.log("[cron/activate-paid] Order", order.id, "| invoice status:", invoice?.status, "| amountDue:", invoice?.amountDue?.value, "| isPaid:", isPaid);
 
       if (!isPaid) {
         skipped.push({ orderId: order.id, status: invoice?.status });
