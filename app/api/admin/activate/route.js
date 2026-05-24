@@ -63,6 +63,7 @@ export async function POST(req) {
         iptv_server_url: iptvServerUrl,
         iptv_username:   iptvUsername,
         iptv_password:   iptvPassword,
+        reseller_line_id: iptvUsername,
       });
 
     if (subError) throw new Error(subError.message);
