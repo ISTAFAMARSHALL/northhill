@@ -2,10 +2,15 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ['puppeteer-core', '@sparticuz/chromium'],
-  experimental: {
-    serverActions: {
-      bodySizeLimit: '2mb',
-    },
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals = [
+        ...(Array.isArray(config.externals) ? config.externals : [config.externals]),
+        '@sparticuz/chromium',
+        'puppeteer-core',
+      ];
+    }
+    return config;
   },
 };
 
