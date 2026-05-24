@@ -78,15 +78,20 @@ export async function POST(req) {
       });
     }
 
-    // ── Payment confirmed — check if already activated ────────
+    // ── Payment confirmed — fetch order ──────────────────────
     const supabase = adminClient();
-    const { data: order } = await supabase
+    const { data: order, error: orderErr } = await supabase
       .from("orders")
-      .select("*, subscriptions(id)")
+      .select("*")
       .eq("id", orderId)
       .single();
 
-    if (order?.status === "active") {
+    if (orderErr || !order) {
+      console.error("[check-payment] Order not found:", orderId, orderErr?.message);
+      return NextResponse.json({ error: `Order not found: ${orderErr?.message}` }, { status: 404 });
+    }
+
+    if (order.status === "active") {
       return NextResponse.json({ isPaid: true, alreadyActivated: true, status: invoice.status });
     }
 
