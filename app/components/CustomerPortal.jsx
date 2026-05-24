@@ -246,7 +246,7 @@ function SubscriptionCard({ subscription, index }) {
 // ─────────────────────────────────────────
 // Dashboard Screen
 // ─────────────────────────────────────────
-function Dashboard({ user, subscriptions, onLogout }) {
+function Dashboard({ user, subscriptions, pendingOrders = [], activatingOrder = false, onLogout }) {
   const [showAddModal, setShowAddModal] = useState(false);
 
   const activeCount = subscriptions.filter(s => s.status === "active" || s.status === "trial").length;
@@ -318,6 +318,23 @@ function Dashboard({ user, subscriptions, onLogout }) {
             </button>
           )}
         </div>
+
+        {/* ── Pending payment banner ─────────────────────────────── */}
+        {(pendingOrders.length > 0 || activatingOrder) && (
+          <div style={{ background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.3)", borderRadius: 12, padding: "1rem 1.25rem", marginBottom: "1.5rem", display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            <span style={{ fontSize: 20 }}>{activatingOrder ? "⚙️" : "⏳"}</span>
+            <div>
+              <p style={{ fontSize: 14, fontWeight: 600, color: "#f59e0b", margin: 0 }}>
+                {activatingOrder ? "Activating your subscription…" : "Payment received — setting up your account"}
+              </p>
+              <p style={{ fontSize: 12, color: "#9ca3af", margin: "2px 0 0" }}>
+                {activatingOrder
+                  ? "Creating your streaming line — this takes about 30 seconds."
+                  : "We found your payment. Refresh this page in a moment to see your credentials."}
+              </p>
+            </div>
+          </div>
+        )}
 
         {subscriptions.length === 0 ? (
           <div style={{ ...S.card, textAlign: "center", padding: "3rem" }}>
@@ -407,9 +424,11 @@ function CredentialRow({ label, value, canCopy, masked, onToggleMask, showToggle
 // Main export
 // ─────────────────────────────────────────
 export default function CustomerPortal() {
-  const [user,          setUser]          = useState(null);
-  const [subscriptions, setSubscriptions] = useState([]);
-  const [loading,       setLoading]       = useState(true);
+  const [user,            setUser]            = useState(null);
+  const [subscriptions,   setSubscriptions]   = useState([]);
+  const [pendingOrders,   setPendingOrders]   = useState([]);
+  const [activatingOrder, setActivatingOrder] = useState(false);
+  const [loading,         setLoading]         = useState(true);
   const supabase = createClient();
 
   const fetchSubscriptions = async (userId) => {
@@ -419,23 +438,71 @@ export default function CustomerPortal() {
       .eq("user_id", userId)
       .order("created_at", { ascending: false });
     setSubscriptions(data || []);
-    setLoading(false);
+  };
+
+  const fetchOrders = async (userId) => {
+    const { data } = await supabase
+      .from("orders")
+      .select("id, status, wave_invoice_id, wave_invoice_url, plan_name, plan_term")
+      .eq("user_id", userId)
+      .eq("status", "invoiced")
+      .not("wave_invoice_id", "is", null);
+    setPendingOrders(data || []);
+  };
+
+  // Auto-check invoiced orders for payment and activate if paid.
+  // Runs once when the portal loads — fires silently in the background.
+  const checkAndActivatePending = async (session, invoicedOrders) => {
+    if (!invoicedOrders || invoicedOrders.length === 0) return;
+    setActivatingOrder(true);
+    for (const order of invoicedOrders) {
+      try {
+        const res  = await fetch("/api/orders/activate-if-paid", {
+          method:  "POST",
+          headers: {
+            "Content-Type":  "application/json",
+            "Authorization": `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ orderId: order.id }),
+        });
+        const data = await res.json();
+        if (data.activated) {
+          // Refresh subscriptions so credentials appear immediately
+          await fetchSubscriptions(session.user.id);
+          await fetchOrders(session.user.id);
+        }
+      } catch (_) {
+        // Silent — cron will catch any failures
+      }
+    }
+    setActivatingOrder(false);
   };
 
   useEffect(() => {
-    const { data: { subscription: authSub } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription: authSub } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       if (session?.user) {
         setUser(session.user);
-        fetchSubscriptions(session.user.id);
+        await fetchSubscriptions(session.user.id);
+        await fetchOrders(session.user.id);
+        setLoading(false);
+        // Auto-check invoiced orders after data loads
+        const { data: invoiced } = await supabase
+          .from("orders")
+          .select("id, wave_invoice_id")
+          .eq("user_id", session.user.id)
+          .eq("status", "invoiced")
+          .not("wave_invoice_id", "is", null);
+        if (invoiced?.length) checkAndActivatePending(session, invoiced);
       } else {
         setUser(null);
         setSubscriptions([]);
+        setPendingOrders([]);
         setLoading(false);
       }
     });
     return () => authSub.unsubscribe();
-  },);
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -451,5 +518,13 @@ export default function CustomerPortal() {
 
   if (!user) return <LoginScreen onLogin={() => {}} />;
 
-  return <Dashboard user={user} subscriptions={subscriptions} onLogout={handleLogout} />;
+  return (
+    <Dashboard
+      user={user}
+      subscriptions={subscriptions}
+      pendingOrders={pendingOrders}
+      activatingOrder={activatingOrder}
+      onLogout={handleLogout}
+    />
+  );
 }
