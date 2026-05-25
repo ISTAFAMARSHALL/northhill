@@ -1,210 +1,206 @@
-# IPTV Reseller Landing Page — Next.js Template
+# North Hill Systems — IPTV Reseller Platform
 
-A free, open-source, production-ready landing page built with **Next.js** for IPTV resellers. Download, configure with your own branding and pricing, and deploy in minutes. No backend required to get started.
+A full-stack IPTV reseller business platform built with **Next.js 16**, **Supabase**, **Wave**, and **Puppeteer**. Handles everything from customer sign-up and plan selection through automated provisioning, invoicing, renewal reminders, and a self-service customer portal.
 
-![Next.js](https://img.shields.io/badge/Next.js-15+-black?style=flat-square&logo=next.js)
+![Next.js](https://img.shields.io/badge/Next.js-16+-black?style=flat-square&logo=next.js)
+![Supabase](https://img.shields.io/badge/Supabase-Auth%20%2B%20DB-3ecf8e?style=flat-square&logo=supabase)
 ![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)
-![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)
 
 ---
 
-## Preview
+## What it does
 
-> Dark, premium aesthetic with gradient accents — designed to convert visitors into paying subscribers.
-
-Features visible in the template:
-- Hero section with uptime badge and dual CTAs
-- Features grid (uptime, EPG, VOD, trial, etc.)
-- Pricing section with Monthly / Quarterly / Annual toggle
-- Plan cards with "Most Popular" highlight
-- 24-hour free trial modal with email capture
-- Collapsible FAQ section
-- Sticky navigation and footer
+| Capability | Details |
+|---|---|
+| **Customer auth** | Supabase email/password sign-up and sign-in |
+| **Plan selection** | Monthly / Quarterly / Annual toggle across Solo, Duo, and Family tiers |
+| **Free trials** | 24-hour trial auto-provisioned instantly via reseller panel (1 per account) |
+| **Invoicing** | Wave invoice created automatically and emailed to the customer on order |
+| **Payment detection** | Portal polls Wave on return; cron sweeps every 5 min as a fallback |
+| **Line provisioning** | Puppeteer automates the reseller panel to create or extend IPTV credentials |
+| **Admin dashboard** | GitHub OAuth–protected view of all orders with Check Payment / Activate actions |
+| **Customer portal** | Self-service view of active subscriptions with credentials, expiry, and renewal links |
+| **Renewal invoices** | Daily cron sends Wave invoices 7 and 2 days before each subscription expires |
+| **Webhook handler** | Wave payment webhook extends the reseller line and emails new credentials on renewal |
+| **Setup guide** | `/setup` page with device-specific IPTV app setup instructions |
+| **Email notifications** | Transactional emails via Resend for trial activation, invoices, and renewals |
 
 ---
 
-## Quick Start
+## Tech stack
+
+- **Next.js 16** (App Router) — React framework
+- **Supabase** — Auth (email + GitHub OAuth) and Postgres database
+- **Wave** — Invoicing and payment tracking via GraphQL API + webhooks
+- **Puppeteer / @sparticuz/chromium** — Headless browser automation of the reseller panel
+- **Resend** — Transactional email delivery
+- **Vercel** — Hosting, cron jobs, and serverless functions
+- **DM Sans / DM Serif Display** — Typography (Google Fonts)
+
+---
+
+## Project structure
+
+```
+app/
+├── page.tsx                         # Landing page
+├── plans/page.js                    # Plan selection (auth-gated)
+├── portal/page.tsx                  # Customer portal
+├── admin/page.jsx                   # Admin dashboard (GitHub OAuth)
+├── signup/page.jsx                  # Sign-up
+├── setup/page.jsx                   # Device setup guide
+├── terms/page.tsx                   # Terms of service
+├── auth/callback/route.js           # Wave OAuth callback
+│
+├── api/
+│   ├── orders/
+│   │   ├── request/route.js         # New order — creates invoice or activates trial
+│   │   └── activate-if-paid/route.js # Portal fast-path payment check
+│   ├── trial/request/route.js       # Trial request entrypoint
+│   ├── admin/
+│   │   ├── orders/route.js          # Fetch all orders (admin-only)
+│   │   ├── activate/route.js        # Manually activate a paid order
+│   │   └── check-payment/route.js   # Check Wave payment status for an order
+│   ├── cron/
+│   │   ├── activate-paid-orders/route.js  # Every 5 min — sweep invoiced orders
+│   │   └── renewal-invoices/route.js      # Daily — send renewal invoices (7d & 2d out)
+│   ├── webhooks/wave/route.js       # Wave payment webhook — extends line on renewal
+│   └── dev/cleanup/route.js        # Dev-only data wipe
+│
+└── components/
+    ├── NorthHillLanding.jsx         # Marketing landing page
+    ├── CustomerPortal.jsx           # Subscription management UI
+    ├── AdminDashboard.jsx           # Order management UI
+    └── TermsPage.jsx
+
+lib/
+├── supabase.js                      # Supabase client factory
+├── wave.js                          # Wave GraphQL helpers (create invoice, check status)
+├── reseller.js                      # Puppeteer reseller panel automation
+├── plans.js                         # Shared plan definitions
+└── feature-list.js                  # Landing page feature copy
+```
+
+---
+
+## Order lifecycle
+
+```
+Customer selects plan
+        │
+        ▼
+POST /api/orders/request
+        │
+        ├─ Trial? ──► Auto-provision via Puppeteer ──► Email credentials ──► Done
+        │
+        └─ Paid?  ──► Create Wave invoice ──► Email invoice link
+                             │
+                   Customer pays invoice
+                             │
+              ┌──────────────┴──────────────┐
+              │ (fast path)                  │ (fallback)
+     Portal visits /activate-if-paid    Cron polls every 5 min
+              │                              │
+              └──────────────┬──────────────┘
+                             ▼
+                  Admin activates in dashboard
+                  POST /api/admin/activate
+                             │
+                  Puppeteer creates reseller line
+                  Email credentials to customer
+
+Renewal (near expiry):
+  Daily cron ──► Wave renewal invoice sent (at 7d and 2d)
+  Customer pays ──► Wave webhook ──► Puppeteer extends line ──► Email new credentials
+```
+
+---
+
+## Environment variables
 
 ```bash
-# 1. Clone the repo
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SECRET_KEY=
+
+# Wave (invoicing)
+WAVE_CLIENT_ID=
+WAVE_CLIENT_SECRET=
+WAVE_FULL_ACCESS_TOKEN=
+WAVE_BUSINESS_ID=
+WAVE_PRODUCT_ID=
+WAVE_WEBHOOK_SECRET=
+
+# Reseller panel (Puppeteer automation)
+RESELLER_SERVER_URL=
+RESELLER_USERNAME=
+RESELLER_PASSWORD=
+RESELLER_API_KEY=
+
+# Email (Resend)
+RESEND_API_KEY=
+RESEND_FROM_EMAIL=
+
+# App
+NEXT_PUBLIC_SITE_URL=https://yourdomain.com
+NEXT_PUBLIC_ADMIN_EMAIL=you@example.com
+ADMIN_EMAIL=you@example.com
+ADMIN_NOTIFY_EMAIL=you@example.com
+
+# Cron protection
+CRON_SECRET=
+```
+
+---
+
+## Local development
+
+```bash
+# 1. Clone and install
 git clone https://github.com/YOUR_USERNAME/northhill.git
 cd northhill
-
-# 2. Install dependencies
 npm install
 
-# 3. Start the dev server
+# 2. Copy and fill in env vars
+cp .env.local.example .env.local
+
+# 3. Start dev server
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see it live.
+Open [http://localhost:3000](http://localhost:3000).
+
+> **Supabase redirect URLs:** Add `http://localhost:3000/**` and your production URL to the allowed redirect list in your Supabase project → Authentication → URL Configuration.
 
 ---
 
-## Configuration
-
-All reseller-specific content lives in a single file. Open `components/NorthHillLanding.jsx` and update the following sections:
-
-### Business Name & Branding
-
-```jsx
-// Find this near the top of the component
-<span>Your Business Name</span>
-```
-
-Update the logo text, colors, and any brand references throughout the file. The primary accent color is defined inline as `#7c3aed` (purple) — do a find-and-replace to swap it for your brand color.
-
-### Pricing Plans
-
-Edit the `PLANS` array at the top of the file:
-
-```jsx
-const PLANS = [
-  {
-    id: "solo-monthly",
-    name: "Solo",
-    connections: 1,
-    term: "monthly",         // "monthly" | "quarterly" | "annual"
-    termLabel: "1 Month",
-    price: 13,               // Your price
-    badge: null,             // e.g. "Most Popular" or null
-    highlight: false,        // true = purple highlight card
-    perMonth: 13,            // Displayed $/mo rate
-    description: "Perfect for a single screen",
-  },
-  // ... add or remove plans as needed
-];
-```
-
-### Features Section
-
-Edit the `FEATURES` array:
-
-```jsx
-const FEATURES = [
-  { icon: "📡", title: "99.9% Uptime", desc: "Your description here" },
-  // ...
-];
-```
-
-### FAQ
-
-Update the FAQ items inside the JSX:
-
-```jsx
-{[
-  ["Your question here?", "Your answer here."],
-  // ...
-].map(([q, a]) => (
-  <FAQItem key={q} question={q} answer={a} />
-))}
-```
-
-### Trial Modal
-
-The trial modal currently captures an email address. To connect it to your fulfillment system, replace the `handleTrialSubmit` function with your own API call or form handler:
-
-```jsx
-const handleTrialSubmit = async (e) => {
-  e.preventDefault();
-  // Add your logic here — POST to your API, send to email service, etc.
-  await fetch("/api/trial", {
-    method: "POST",
-    body: JSON.stringify({ email: trialEmail }),
-  });
-  setTrialSubmitted(true);
-};
-```
-
----
-
-## Project Structure
-
-```
-/
-├── app/
-│   ├── page.js               # Entry point — imports the landing page
-│   └── layout.js             # Root layout
-├── components/
-│   └── NorthHillLanding.jsx  # ← All landing page content lives here
-├── public/                   # Static assets (add your logo here)
-├── package.json
-└── README.md
-```
-
----
-
-## Deployment
-
-### Vercel (Recommended — Free Tier Available)
+## Deployment (Vercel)
 
 ```bash
 npm install -g vercel
 vercel
 ```
 
-Follow the prompts. Your site will be live at a `.vercel.app` URL instantly. Connect a custom domain in the Vercel dashboard.
+The `vercel.json` at the repo root configures two cron jobs automatically:
 
-### Netlify
+| Cron | Schedule | Purpose |
+|---|---|---|
+| `/api/cron/activate-paid-orders` | Every 5 minutes | Sweep invoiced orders and activate paid ones |
+| `/api/cron/renewal-invoices` | Daily at 13:00 UTC | Send renewal invoices 7 and 2 days before expiry |
 
-```bash
-npm run build
-# Upload the .next folder or connect your GitHub repo in the Netlify dashboard
-```
-
-### Self-Hosted (VPS / DigitalOcean / Linode)
-
-```bash
-npm run build
-npm start
-# Point your domain's DNS to your server IP and use nginx as a reverse proxy
-```
+Cron jobs require **Vercel Pro**. Set `CRON_SECRET` in your Vercel environment and the routes will reject any requests that don't carry it.
 
 ---
 
-## Connecting a Payment System
+## Admin access
 
-The "Get Started" buttons are currently unstyled placeholders. To connect payments:
+The admin dashboard at `/admin` is protected by **GitHub OAuth via Supabase**. Only the account whose email matches `ADMIN_EMAIL` / `NEXT_PUBLIC_ADMIN_EMAIL` can proceed past the login screen.
 
-- **Stripe** — recommended. Add a Stripe Checkout session in `/app/api/checkout/route.js` and point each plan button to it with the correct price ID.
-- **PayPal** — use the PayPal JS SDK and render PayPal buttons inside the plan cards.
-- **CashApp / Venmo / manual** — replace the button `onClick` with a link to your payment handle or a contact form.
-
----
-
-## Customization Ideas
-
-- Add a **live channel count** badge pulled from your panel's API
-- Integrate **Crisp** or **Tawk.to** for live chat support
-- Add a **device compatibility** section with icons (Firestick, Android, iOS, Smart TV)
-- Build a `/activate` page for customers to enter their credentials after purchase
-- Add **Google Analytics** or **Plausible** for conversion tracking
-
----
-
-## Contributing
-
-Pull requests are welcome. If you've added a useful section (payment integration, activation flow, admin dashboard, etc.) and want to share it back with the community, open a PR.
-
-1. Fork the repo
-2. Create a feature branch: `git checkout -b feature/my-feature`
-3. Commit your changes: `git commit -m "Add my feature"`
-4. Push and open a pull request
+Add your production domain to Supabase → Authentication → URL Configuration → Redirect URLs so OAuth works from any device.
 
 ---
 
 ## License
 
-MIT — free to use, modify, and distribute for personal or commercial projects. Attribution appreciated but not required.
-
----
-
-## Built With
-
-- [Next.js](https://nextjs.org/) — React framework
-- [DM Sans + DM Serif Display](https://fonts.google.com/) — Typography
-- No UI library dependencies — pure React + inline styles
-
----
-
-*Template originally developed for the IPTV reseller community. If this saves you time, consider starring the repo ⭐*
+MIT — free to use, modify, and distribute for personal or commercial projects.
